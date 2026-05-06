@@ -1,4 +1,12 @@
-@import url("https://api.fontshare.com/v2/css?f[]=tronica-mono@400,500,700&display=swap");
+/* Point to your local downloaded font files */
+@font-face {
+  font-family: "Tronica Mono";
+  /* Vite will resolve this relative path to your assets folder */
+  src: url("../assets/fonts/Tronica%20Mono.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --font-tronica: "Tronica Mono", ui-monospace, "JetBrains Mono", monospace;

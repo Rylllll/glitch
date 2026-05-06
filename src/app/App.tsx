@@ -31,10 +31,10 @@ export default function App() {
         <TerminalGlitches />
         {/* TOP BAR */}
         <div className="grid grid-cols-4 items-start text-[11px] uppercase tracking-widest">
-          <div className="text-white">reymark</div>
+          <div className="text-white font-extrabold">reymark</div>
 
           <nav className="flex flex-col gap-1">
-            <a href="#works" className="hover:text-white/60 transition w-fit font-bold">
+            <a href="#works" className="hover:text-white/60 transition w-fit">
               <GlitchText>WORKS</GlitchText>
             </a>
             <a href="#about" className="hover:text-white/60 transition w-fit">
@@ -47,7 +47,7 @@ export default function App() {
               <GlitchText>INSTAGRAM ↗</GlitchText>
             </a>
             <a href="#contact" className="w-fit">
-              <GlitchText>INFO@REYMARK.MOV</GlitchText>
+              <GlitchText>reymarkdesigns@gmail.com</GlitchText>
             </a>
           </div>
 
