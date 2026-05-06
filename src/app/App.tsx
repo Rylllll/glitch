@@ -4,7 +4,7 @@ import { GlitchText } from "./components/glitch-text";
 import { AsciiTitle } from "./components/ascii-title";
 import { Scanlines } from "./components/scanlines";
 import { SmoothScroll } from "./components/smooth-scroll";
-import { WorkSlide } from "./components/work-slide";
+import { WorksGallery } from "./components/WorksGallery"; // The new gallery component
 import { TerminalGlitches } from "./components/terminal-glitches";
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
       <SmoothScroll />
       <Scanlines />
 
-      {/* HERO — full viewport, mirrors reference layout */}
+      {/* HERO — full viewport */}
       <section className="relative z-10 flex h-screen w-full flex-col p-6 overflow-hidden">
         <div
           aria-hidden
@@ -29,8 +29,9 @@ export default function App() {
           }}
         />
         <TerminalGlitches />
+        
         {/* TOP BAR */}
-        <div className="grid grid-cols-4 items-start text-[11px] uppercase tracking-widest">
+        <div className="grid grid-cols-4 items-start text-[11px] uppercase tracking-widest relative z-20">
           <div className="text-white font-extrabold">reymark</div>
 
           <nav className="flex flex-col gap-1">
@@ -44,7 +45,7 @@ export default function App() {
 
           <div className="flex flex-col gap-1 text-white/80">
             <a href="#" className="w-fit">
-              <GlitchText>INSTAGRAM ↗</GlitchText>
+              <GlitchText>GITHUB ↗</GlitchText>
             </a>
             <a href="#contact" className="w-fit">
               <GlitchText>reymarkdesigns@gmail.com</GlitchText>
@@ -52,92 +53,152 @@ export default function App() {
           </div>
 
           <div className="flex flex-col items-end gap-1 text-right">
-            <span>PRODUCTION STUDIO</span>
+            <span>CREATIVE DEVELOPER</span>
             <span>MANILA, PHILIPPINES</span>
           </div>
         </div>
 
         {/* CENTER ASCII WORDMARK */}
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1 items-center justify-center relative z-20">
           <AsciiTitle />
         </div>
 
         {/* BOTTOM ROW */}
-        <div className="grid grid-cols-2 text-[11px] uppercase tracking-widest">
+        <div className="grid grid-cols-2 text-[11px] uppercase tracking-widest relative z-20">
           <div className="flex flex-col gap-1">
-            <span>FILM PRODUCTION.</span>
+            <span>DIGITAL EXPERIENCES.</span>
             <span>REIMAGINED.</span>
           </div>
           <div className="text-right text-white/80 leading-relaxed">
-            REYMARK.MOV IS A HYBRID PRODUCTION COMPANY FUSING HIGH-END COMMERCIAL<br />
-            WORK WITH A DRIVE TO EXPLORE THE UNCONVENTIONAL...
+            REYMARK IS A CREATIVE DEVELOPER FUSING HIGH-END<br />
+            DESIGN WITH A DRIVE TO EXPLORE THE UNCONVENTIONAL...
           </div>
         </div>
       </section>
 
-      {/* SELECTED WORKS — fullscreen scroll */}
+      {/* SELECTED WORKS — Frozen sticky scroll gallery with curtain transition */}
       <div id="works" className="relative z-10 border-t border-white/10">
-        {WORKS.map((w, i) => (
-          <WorkSlide key={w.title} index={i} total={WORKS.length} {...w} />
-        ))}
+        <WorksGallery works={WORKS} />
       </div>
 
-      {/* ABOUT */}
-      <section id="about" className="relative z-10 border-t border-white/10 px-6 py-20">
+      {/* ABOUT ME & TECH STACK */}
+      <section id="about" className="relative z-10 border-t border-white/10 px-6 py-32">
         <Reveal>
           <div className="mb-8 text-[11px] uppercase tracking-widest text-white/50">
-            &gt; cat about.txt
+            &gt; whoami
           </div>
         </Reveal>
+        
         <Reveal delay={0.1}>
           <h2 className="max-w-5xl text-3xl uppercase leading-[1.05] md:text-5xl">
-            we shoot. we produce. we finish.<br />
-            <span className="text-white/60">commercials made from passion._</span>
+            i design. i code. i deploy.<br />
+            <span className="text-white/60">building interfaces made from passion._</span>
           </h2>
         </Reveal>
 
-        <div className="mt-16 grid grid-cols-1 gap-10 md:grid-cols-4 text-[11px] uppercase tracking-widest">
-          {SERVICES.map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.08}>
-              <div className="border-t border-white/20 pt-3">
-                <div className="mb-3 text-white/50">[{s.code}] {s.label}</div>
-                <ul className="space-y-1 text-white/80 normal-case tracking-normal">
-                  {s.items.map((it) => (
-                    <li key={it}>&gt; {it}</li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
+        <Reveal delay={0.2}>
+          <p className="mt-8 max-w-2xl text-[12px] leading-relaxed text-white/70 uppercase tracking-widest">
+            I am a creative developer bridging the gap between brutalist design and fluid engineering. 
+            Obsessed with performance, interactive animations, and crafting unconventional digital architectures.
+          </p>
+        </Reveal>
+
+        {/* TECH STACK */}
+        <div className="mt-24">
+          <Reveal>
+            <div className="mb-8 text-[11px] uppercase tracking-widest text-white/50">
+              &gt; ls ./tech_stack
+            </div>
+          </Reveal>
+          
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-4 text-[11px] uppercase tracking-widest">
+            {TECH_STACK.map((s, i) => (
+              <Reveal key={s.label} delay={i * 0.08}>
+                <div className="border-t border-white/20 pt-3">
+                  <div className="mb-3 text-white/50">[{s.code}] {s.label}</div>
+                  <ul className="space-y-1 text-white/80 normal-case tracking-normal">
+                    {s.items.map((it) => (
+                      <li key={it}>&gt; {it}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CONTACT / ASCII FOOTER */}
-      <section id="contact" className="relative z-10 border-t border-white/10 px-6 pt-16 pb-6">
+      {/* CONTACT SECTION */}
+      <section id="contact" className="relative z-10 border-t border-white/10 px-6 py-32 bg-black">
+        <Reveal>
+          <div className="mb-8 text-[11px] uppercase tracking-widest text-white/50">
+            &gt; ./initiate_contact.sh
+          </div>
+        </Reveal>
+        
+        <Reveal delay={0.1}>
+          <h2 className="text-4xl md:text-6xl uppercase leading-[1.05] mb-16">
+            let's build <br />
+            <span className="text-white/60">something._</span>
+          </h2>
+        </Reveal>
+
+        <Reveal delay={0.2}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 text-[11px] uppercase tracking-widest">
+            <div>
+              <div className="text-white/50 mb-4 border-b border-white/20 pb-2 w-fit">STATUS</div>
+              <div className="text-white mb-8">AVAILABLE FOR FREELANCE & COLLABORATION</div>
+              <a href="mailto:reymarkdesigns@gmail.com" className="text-xl md:text-3xl hover:text-white/60 transition-colors block">
+                <GlitchText>REYMARKDESIGNS@GMAIL.COM</GlitchText>
+              </a>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-8">
+              <div>
+                <div className="text-white/50 mb-4 border-b border-white/20 pb-2 w-fit">NETWORK</div>
+                <ul className="space-y-3">
+                  <li>
+                    <a href="#" className="hover:text-white/60 flex items-center gap-2">
+                      <GlitchText>GITHUB ↗</GlitchText>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white/60 flex items-center gap-2">
+                      <GlitchText>LINKEDIN ↗</GlitchText>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white/60 flex items-center gap-2">
+                      <GlitchText>TWITTER ↗</GlitchText>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <div className="text-white/50 mb-4 border-b border-white/20 pb-2 w-fit">LOCATION</div>
+                <p className="text-white/80 leading-relaxed">
+                  MANILA, PHILIPPINES<br />
+                  UTC+8 / REMOTE
+                </p>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* ASCII FOOTER */}
+      <footer className="relative z-10 border-t border-white/10 px-6 pt-16 pb-6">
         <div className="flex justify-center">
           <AsciiTitle />
         </div>
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 text-[10px] uppercase tracking-widest text-white/60">
-          <div>
-            <div>REYMARK.MOV STUDIO</div>
-            <div className="text-white/40">MANILA / GLOBAL</div>
-          </div>
-          <div className="md:text-center">
-            <div className="text-white/40">GET IN TOUCH_</div>
-            <div className="text-white">INFO@REYMARK.MOV</div>
-          </div>
-          <div className="md:text-right">
-            <div className="text-white/40">© 2026</div>
-            <div>ALL RIGHTS RESERVED</div>
-          </div>
-        </div>
-        <div className="mt-12 flex items-center justify-between border-t border-white/10 pt-3 text-[10px] tracking-widest text-white/40">
+        <div className="mt-12 flex flex-col md:flex-row items-center justify-between border-t border-white/10 pt-4 text-[10px] tracking-widest text-white/40 uppercase gap-4">
           <span>&gt; END_OF_TRANSMISSION</span>
+          <span>© 2026 ALL RIGHTS RESERVED</span>
           <a href="#" className="hover:text-white">
             <GlitchText>↑ BACK_TO_TOP</GlitchText>
           </a>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }
@@ -148,24 +209,28 @@ const WORKS = [
     client: "SAMSUNG",
     type: "COMMERCIAL",
     date: "2026",
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=3174&auto=format&fit=crop",
   },
   {
     title: "KÄSY",
     client: "MCDONALDS",
     type: "COMMERCIAL",
     date: "2025",
+    image: "https://images.unsplash.com/photo-1606851094655-b25cb28d8914?q=80&w=3174&auto=format&fit=crop",
   },
   {
     title: "ECHO/CHAMBER",
     client: "SONY",
     type: "MUSIC VIDEO",
     date: "2025",
+    image: "https://images.unsplash.com/photo-1493225457124-a1a2a5f5f4f0?q=80&w=3174&auto=format&fit=crop",
   },
   {
     title: "AFTERGLOW",
     client: "NIKE",
     type: "BRAND FILM",
     date: "2024",
+    image: "https://images.unsplash.com/photo-1552346154-21d32810baa3?q=80&w=3174&auto=format&fit=crop",
   },
 ];
 
@@ -182,25 +247,25 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
   );
 }
 
-const SERVICES = [
+const TECH_STACK = [
   {
     code: "01",
-    label: "CREATIVE DIRECTION",
-    items: ["Concept Development", "Creative Consulting", "Talent Curation", "Visual Direction"],
+    label: "FRONTEND",
+    items: ["React & Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
   },
   {
     code: "02",
-    label: "PRODUCTION",
-    items: ["International Production", "Cross-border Production", "Scalable Crew", "End-to-end Management"],
+    label: "CREATIVE DEV",
+    items: ["Three.js / WebGL", "GSAP / Motion", "Canvas API", "Shaders (GLSL)"],
   },
   {
     code: "03",
-    label: "POST",
-    items: ["Editorial & Offline", "Color & Online", "VFX & Compositing", "Sound Design"],
+    label: "BACKEND",
+    items: ["Node.js", "PostgreSQL", "Supabase", "REST & GraphQL"],
   },
   {
     code: "04",
-    label: "HYBRID APPROACH",
-    items: ["Full 4D Hybrid Models", "Continuous Workflow", "Integration Strategy", "AI & Rights Advisory"],
+    label: "DESIGN / TOOLS",
+    items: ["Figma", "Adobe Creative Suite", "Git / Vercel", "Cursor / AI Workflows"],
   },
 ];
