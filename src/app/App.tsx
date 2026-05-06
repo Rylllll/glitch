@@ -21,7 +21,7 @@ export default function App() {
           style={{
             backgroundImage:
               "linear-gradient(to right, rgba(255,255,255,0.18) 0.5px, transparent 0.5px), linear-gradient(to bottom, rgba(255,255,255,0.18) 0.5px, transparent 0.5px)",
-            backgroundSize: "8px 8px",
+            backgroundSize: "5px 5px",
             maskImage:
               "radial-gradient(ellipse at center, black 40%, transparent 90%)",
             WebkitMaskImage:
