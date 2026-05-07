@@ -1,7 +1,9 @@
-/* Point to your local downloaded font files */
+/* Import Druk wide from Google Fonts (Put this at the VERY TOP of your CSS file) */
+@import url('https://fonts.cdnfonts.com/css/druk-wide-trial');
+
+/* Your existing Tronica Mono local font */
 @font-face {
   font-family: "Tronica Mono";
-  /* Vite will resolve this relative path to your assets folder */
   src: url("../assets/fonts/Tronica%20Mono.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
@@ -10,8 +12,17 @@
 
 :root {
   --font-tronica: "Tronica Mono", ui-monospace, "JetBrains Mono", monospace;
+  
+  /* Add Druk CSS variable */
+  --font-druk: "Druk Wide Trial", sans-serif;
+                                                
 }
 
 .font-tronica {
   font-family: var(--font-tronica);
+}
+
+/* Add Druk wide utility class */
+.font-druk {
+  font-family: var(--font-druk);
 }

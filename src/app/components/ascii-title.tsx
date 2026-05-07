@@ -260,11 +260,7 @@ export function AsciiTitle() {
           <div key={i}>{row.join("")}</div>
         ))}
       </pre>
-      
-      <div className="mt-6 h-6 text-white/50 font-tronica text-[10px] md:text-xs tracking-[0.2em] uppercase">
-        {typedText}
-        <span className="inline-block w-2 h-3 bg-white/50 ml-1 animate-pulse align-middle" />
-      </div>
+
     </div>
   );
 }
