@@ -296,7 +296,7 @@ export function WorkOverview() {
           
           {/* VISIT LINK BUTTON */}
           <a 
-            href="#" 
+            href={work.link}
             target="_blank" 
             rel="noreferrer"
             className="relative z-20 border border-white/30 bg-black/40 backdrop-blur-md px-8 py-4 text-[10px] uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-300 pointer-events-auto"

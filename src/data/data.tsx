@@ -4,17 +4,18 @@ export const WORKS = [
   {
     slug: "pokedex-ph",
     title: "Pokedex PH",
-    client: "SAMSUNG",
-    type: "COMMERCIAL",
+    client: "Self Project",
+    type: "Info website",
     date: "2026",
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=3174&auto=format&fit=crop",
+    image: "/images/pokemon/homepage.png",
     images: [
       "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=3174&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=3174&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=3175&auto=format&fit=crop"
     ],
-    description: "A comprehensive digital ecosystem built for Samsung to showcase the evolution of mobile interfaces. The project merges brutalist design with fluid WebGL interactions, creating an immersive product experience that breaks away from traditional corporate constraints.",
-    techStack: ["Next.js", "Three.js", "Framer Motion", "Tailwind CSS"]
+    description: "PokéWeb OS is a modernized, terminal-based interface designed to compile the world's Pokemon data into one fluid, accessible mainframe.",
+    techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Poke Api", "TCG Api", "Mongo DB"],
+    link: "https://pokemon-ph.rynath.dev/"
   },
   {
     slug: "kasy",
@@ -22,14 +23,15 @@ export const WORKS = [
     client: "MCDONALDS",
     type: "COMMERCIAL",
     date: "2025",
-    image: "https://images.unsplash.com/photo-1773332598414-44a45e364d85?q=80&w=687&auto=format&fit=crop",
+    image: "/images/pokemon/homepage.png",
     images: [
       "https://images.unsplash.com/photo-1773332598414-44a45e364d85?q=80&w=687&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=3174&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1561758033-d89a9ad46330?q=80&w=3174&auto=format&fit=crop"
     ],
     description: "An interactive, gamified ordering experience conceptualized for McDonald's. KÄSY redefines the kiosk interface by introducing micro-interactions, custom shaders, and an ultra-responsive layout tailored for Gen-Z consumers.",
-    techStack: ["React", "GLSL Shaders", "Zustand", "Figma"]
+    techStack: ["React", "GLSL Shaders", "Zustand", "Figma"],
+    link: "https://pokemon-ph.rynath.dev/"
   },
   {
     slug: "echo-chamber",
@@ -44,7 +46,8 @@ export const WORKS = [
       "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=3128&auto=format&fit=crop"
     ],
     description: "A generative audio-visual web experience acting as the companion piece for Sony's new artist launch. Real-time audio frequency data drives the distortion and displacement of 3D objects directly in the browser.",
-    techStack: ["Web Audio API", "WebGL", "GSAP", "React Fiber"]
+    techStack: ["Web Audio API", "WebGL", "GSAP", "React Fiber"],
+    link: "https://pokemon-ph.rynath.dev/"
   },
   {
     slug: "afterglow",
@@ -59,7 +62,8 @@ export const WORKS = [
       "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=3174&auto=format&fit=crop"
     ],
     description: "A web-based digital lookbook for Nike's experimental streetwear line. Afterglow utilizes smooth scroll hijacking, dynamic typographic masks, and cinematic transitions to mirror the energy of the brand.",
-    techStack: ["Next.js", "Lenis Scroll", "Motion", "Supabase"]
+    techStack: ["Next.js", "Lenis Scroll", "Motion", "Supabase"],
+    link: "https://pokemon-ph.rynath.dev/"
   },
 ];
 
@@ -72,7 +76,7 @@ export const TECH_STACK = [
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
       </svg>
     ),
-    items: ["React & Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
   },
   {
     code: "02",
