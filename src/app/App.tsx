@@ -8,10 +8,82 @@ import { SmoothScroll } from "./components/smooth-scroll";
 import { WorksGallery } from "./components/WorksGallery"; 
 import { TerminalGlitches } from "./components/terminal-glitches";
 import { WorkOverview } from "./components/WorkOverview"; 
-import { AboutSection } from "./components/about"
+import { AboutSection } from "./components/about";
+
 // --- IMPORT DATA HERE ---
 import { WORKS, TECH_STACK } from "../data/data";
 
+// --- NEW COMPONENT: GLOBAL CANVAS GLITCH ---
+function GlobalGlitchBackground() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const chars = "0123456789!@#$%^&*()_+-=[]{}|;':,./<>?ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let timeoutId: number;
+
+    const draw = () => {
+      // Clear the canvas every frame to keep it sharp and erratic
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Randomly decide if we draw a glitch this frame (creates a sporadic feel)
+      if (Math.random() > 0.3) {
+        const numGlitches = Math.floor(Math.random() * 10) + 3; // 3 to 13 glitch blocks per frame
+
+        for (let i = 0; i < numGlitches; i++) {
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * canvas.height;
+          const length = Math.floor(Math.random() * 25) + 5; // String length
+          
+          let glitchStr = "";
+          for (let j = 0; j < length; j++) {
+            glitchStr += chars[Math.floor(Math.random() * chars.length)];
+          }
+
+          // Randomize opacity and size for depth perception
+          const opacity = Math.random() * 0.15 + 0.02; // 0.02 to 0.17 opacity
+          const fontSize = Math.floor(Math.random() * 10) + 8; // 8px to 18px
+          
+          ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+          ctx.font = `${fontSize}px monospace`;
+          ctx.fillText(glitchStr, x, y);
+        }
+      }
+
+      // Erratic update rate for a "broken" feel (between 30ms and 150ms)
+      const nextFrameTime = Math.random() * 120 + 30;
+      timeoutId = window.setTimeout(() => {
+        requestAnimationFrame(draw);
+      }, nextFrameTime);
+    };
+
+    draw();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 pointer-events-none mix-blend-overlay"
+      style={{ opacity: 0.8 }}
+    />
+  );
+}
 
 function MainLayout() {
   const navigate = useNavigate();
@@ -20,6 +92,8 @@ function MainLayout() {
     <div className="min-h-screen w-full bg-black text-white font-tronica relative">
       <SmoothScroll />
       <Scanlines />
+      {/* Global Background Glitch Injected Here */}
+      <GlobalGlitchBackground />
 
       {/* --- GLOBAL STICKY NAVBAR --- */}
       <header className="fixed top-0 inset-x-0 z-50 grid grid-cols-4 items-start p-6 text-[11px] uppercase tracking-widest pointer-events-none mix-blend-difference">
@@ -79,16 +153,18 @@ function MainLayout() {
         </div>
       </section>
 
+      {/* ABOUT ME & TECH STACK */}
+        <AboutSection />
+
       {/* SELECTED WORKS */}
-      <div id="works" className="relative z-10 border-t border-white/10">
+      <div id="works" className="relative z-10">
         <WorksGallery 
           works={WORKS} 
           onSelectWork={(work) => navigate(`/work/${work.slug}`)} 
         />
       </div>
 
-      {/* ABOUT ME & TECH STACK */}
-        <AboutSection />
+      
       {/* CONTACT */}
       <section id="contact" className="relative z-10 border-t border-white/10 px-6 py-32 bg-black">
         <Reveal>

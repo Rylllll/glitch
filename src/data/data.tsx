@@ -1,11 +1,9 @@
-// data.tsx
-
 export const WORKS = [
   {
     slug: "pokedex-ph",
     title: "Pokedex PH",
-    client: "Self Project",
-    type: "Info website",
+    client: "Personal Project",
+    type: "Information website",
     date: "2026",
     image: "/images/pokemon/homepage.png",
     images: [
@@ -18,12 +16,12 @@ export const WORKS = [
     link: "https://pokemon-ph.rynath.dev/"
   },
   {
-    slug: "kasy",
-    title: "KÄSY",
-    client: "MCDONALDS",
-    type: "COMMERCIAL",
-    date: "2025",
-    image: "/images/pokemon/homepage.png",
+    slug: "Curators archive",
+    title: "Curators archive",
+    client: "Personal Project",
+    type: "Information website",
+    date: "2026",
+    image: "/images/museum/bg.png",
     images: [
       "https://images.unsplash.com/photo-1773332598414-44a45e364d85?q=80&w=687&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=3174&auto=format&fit=crop",
@@ -31,10 +29,10 @@ export const WORKS = [
     ],
     description: "An interactive, gamified ordering experience conceptualized for McDonald's. KÄSY redefines the kiosk interface by introducing micro-interactions, custom shaders, and an ultra-responsive layout tailored for Gen-Z consumers.",
     techStack: ["React", "GLSL Shaders", "Zustand", "Figma"],
-    link: "https://pokemon-ph.rynath.dev/"
+    link: "https://curators-archive.rynath.dev/"
   },
   {
-    slug: "echo-chamber",
+    slug: "Botanic archive",
     title: "ECHO/CHAMBER",
     client: "SONY",
     type: "MUSIC VIDEO",
@@ -50,7 +48,39 @@ export const WORKS = [
     link: "https://pokemon-ph.rynath.dev/"
   },
   {
-    slug: "afterglow",
+    slug: "sunflower",
+    title: "AFTERGLOW",
+    client: "NIKE",
+    type: "BRAND FILM",
+    date: "2024",
+    image: "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=3087&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=3174&auto=format&fit=crop"
+    ],
+    description: "A web-based digital lookbook for Nike's experimental streetwear line. Afterglow utilizes smooth scroll hijacking, dynamic typographic masks, and cinematic transitions to mirror the energy of the brand.",
+    techStack: ["Next.js", "Lenis Scroll", "Motion", "Supabase"],
+    link: "https://pokemon-ph.rynath.dev/"
+  },
+  {
+    slug: "Yamaha PH",
+    title: "AFTERGLOW",
+    client: "NIKE",
+    type: "BRAND FILM",
+    date: "2024",
+    image: "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=3087&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=3174&auto=format&fit=crop"
+    ],
+    description: "A web-based digital lookbook for Nike's experimental streetwear line. Afterglow utilizes smooth scroll hijacking, dynamic typographic masks, and cinematic transitions to mirror the energy of the brand.",
+    techStack: ["Next.js", "Lenis Scroll", "Motion", "Supabase"],
+    link: "https://pokemon-ph.rynath.dev/"
+  },
+  {
+    slug: "Yamaha Racing PH",
     title: "AFTERGLOW",
     client: "NIKE",
     type: "BRAND FILM",

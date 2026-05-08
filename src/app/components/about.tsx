@@ -1,6 +1,5 @@
-import { ReactNode, useState, useEffect, useRef } from "react";
-import { motion, useInView } from "motion/react";
-import { GlitchText } from "./glitch-text";
+import { ReactNode, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import { AsciiPortrait } from "./ascii-portrait";
 
 // --- ASCII ART ASSETS ---
@@ -28,123 +27,13 @@ const ASCII_GAME = `
   '-----------'
 `;
 
-// --- NEW RESUME TECH STACK DATA WITH ICONS ---
-const RESUME_TECH_STACK = [
-  {
-    category: "Frontend Dev",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="3" y1="9" x2="21" y2="9"></line>
-        <line x1="9" y1="21" x2="9" y2="9"></line>
-      </svg>
-    ),
-    skills: ["React.js", "Next.js", "Vite React", "Tailwind CSS", "SCSS", "Vanilla HTML", "JavaScript"]
-  },
-  {
-    category: "Backend Dev",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-        <line x1="6" y1="6" x2="6.01" y2="6"></line>
-        <line x1="6" y1="18" x2="6.01" y2="18"></line>
-      </svg>
-    ),
-    skills: ["Node.js", "Laravel PHP"]
-  },
-  {
-    category: "3D / Web Graphics",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-        <line x1="12" y1="22.08" x2="12" y2="12"></line>
-      </svg>
-    ),
-    skills: ["WebGL", "Three.js"]
-  },
-  {
-    category: "Motion",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-      </svg>
-    ),
-    skills: ["Framer Motion", "GSAP"]
-  },
-  {
-    category: "Languages",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="16 18 22 12 16 6"></polyline>
-        <polyline points="8 6 2 12 8 18"></polyline>
-      </svg>
-    ),
-    skills: ["TypeScript", "JavaScript", "PHP"]
-  },
-  {
-    category: "Design Tools",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-      </svg>
-    ),
-    skills: ["Figma", "Adobe XD"]
-  }
+// Map your data items to official SimpleIcons slugs
+const TECH_IMAGES = [
+  "react", "nextdotjs", "typescript", "tailwindcss", "framer",
+  "threedotjs", "webgl", "greensock", "html5", "opengl",
+  "nodedotjs", "postgresql", "supabase", "graphql",
+  "figma", "adobecreativecloud", "git", "vercel"
 ];
-
-// --- COMPONENT: SCRAMBLE / DECODE TEXT ---
-export function ScrambleText({ text, delay = 0, className = "" }: { text: string; delay?: number; className?: string }) {
-  const [displayText, setDisplayText] = useState("");
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-10%" });
-
-  useEffect(() => {
-    if (!isInView) return;
-    
-    let timeout: ReturnType<typeof setTimeout>;
-    let frame: number;
-    let iteration = 0;
-    const chars = "!<>-_\\/[]{}—=+*^?#_01";
-
-    const animate = () => {
-      setDisplayText(
-        text
-          .split("")
-          .map((char, index) => {
-            if (char === " ") return " ";
-            if (index < iteration) return text[index];
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join("")
-      );
-
-      if (iteration >= text.length) {
-        cancelAnimationFrame(frame);
-      } else {
-        iteration += 1 / 3; 
-        frame = requestAnimationFrame(animate);
-      }
-    };
-
-    timeout = setTimeout(() => {
-      frame = requestAnimationFrame(animate);
-    }, delay * 1000);
-
-    return () => {
-      clearTimeout(timeout);
-      cancelAnimationFrame(frame);
-    };
-  }, [isInView, text, delay]);
-
-  return (
-    <span ref={ref} className={`relative inline-block ${className}`}>
-      <span className="opacity-0">{text}</span>
-      <span className="absolute top-0 left-0 w-full h-full text-white/90">{displayText}</span>
-    </span>
-  );
-}
 
 // Upgraded Reveal
 export function Reveal({ children, delay = 0, y = 40 }: { children: ReactNode; delay?: number; y?: number }) {
@@ -153,318 +42,359 @@ export function Reveal({ children, delay = 0, y = 40 }: { children: ReactNode; d
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
   );
 }
 
-// HUD Style Personal Info Card
-function PersonalInfoCard({ 
-  moduleName, 
-  content, 
-  asciiArt, 
-  delay 
-}: { 
-  moduleName: string; 
-  content: string; 
-  asciiArt: string; 
-  delay: number;
-}) {
+// Line Draw Animation for Dividers
+function DrawLine({ delay = 0 }: { delay?: number }) {
+  return (
+    <motion.div
+      initial={{ scaleX: 0 }}
+      whileInView={{ scaleX: 1 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 1.2, delay, ease: [0.16, 1, 0.3, 1] }}
+      className="h-[1px] w-full bg-white/20 origin-left"
+    />
+  );
+}
+
+// NEW: Snapping + Fast Blink Reveal for Titles
+export function SnapTitle({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
+  return (
+    <span className="overflow-hidden inline-block align-bottom py-1 -my-1">
+      <motion.span
+        initial={{ y: "100%", opacity: 0 }}
+        whileInView={{
+          y: "0%",
+          opacity: [0, 1, 0, 1, 1], // Rapid blink on reveal
+        }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{
+          y: { duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }, // Hard snap up
+          opacity: { duration: 0.4, delay, times: [0, 0.1, 0.2, 0.3, 1] } // Fast sequence
+        }}
+        className="inline-block"
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
+// Brutalist Table Row (For Professional Log)
+function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: ReactNode; col3: ReactNode; delay: number }) {
   return (
     <Reveal delay={delay} y={20}>
-      <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 border border-white/10 bg-black hover:bg-white/[0.02] transition-all duration-500 group cursor-crosshair overflow-hidden">
-        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50"></div>
-        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50"></div>
-        
-        <pre className="text-[10px] md:text-[12px] text-white/30 font-mono leading-[1.1] group-hover:text-white transition-colors duration-500 z-10">
-          {asciiArt}
-        </pre>
-        <div className="flex flex-col z-10">
-          <span className="text-white/30 text-[10px] mb-2 uppercase tracking-widest border-b border-white/10 pb-1 w-fit transition-colors group-hover:text-white/60">
-            [mod]: {moduleName}
-          </span>
-          <div className="text-[14px] uppercase tracking-widest font-bold">
-            <ScrambleText text={content} delay={delay + 0.2} />
+      <motion.div
+        initial="initial"
+        whileHover="hover"
+        className="relative flex flex-col md:flex-row md:items-center justify-between gap-4 py-10 border-b border-white/20 group overflow-hidden cursor-crosshair"
+      >
+        <motion.div
+          variants={{
+            initial: { scaleY: 0 },
+            hover: { scaleY: 1 }
+          }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 bg-white/[0.03] origin-bottom pointer-events-none"
+        />
+
+        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-12 relative z-10 w-full">
+          <div className="text-[11px] uppercase tracking-widest text-white/40 group-hover:text-white/70 w-[150px] shrink-0 transition-colors">
+            {col1}
           </div>
+          
+          <motion.div 
+            variants={{
+              initial: { x: 0 },
+              hover: { x: 10 }
+            }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="font-druk text-[24px] md:text-[32px] lg:text-[40px] tracking-wide text-white/90 group-hover:text-white leading-[1] uppercase w-full"
+          >
+            {col2}
+          </motion.div>
         </div>
-      </div>
+
+        <div className="text-[11px] uppercase tracking-widest text-white/50 md:text-right group-hover:text-white/90 relative z-10 shrink-0 mt-4 md:mt-0 transition-colors">
+          {col3}
+        </div>
+      </motion.div>
+    </Reveal>
+  );
+}
+
+// Brutalist Data Module (For Personal Archives)
+function ArchiveModule({ title, description, ascii, delay }: { title: string; description: string; ascii: string; delay: number }) {
+  return (
+    <Reveal delay={delay} y={20}>
+      <motion.div 
+        initial="initial"
+        whileHover="hover"
+        className="relative border border-white/20 bg-black p-6 md:p-8 flex flex-col h-full group cursor-crosshair overflow-hidden"
+      >
+        <motion.div
+          variants={{
+            initial: { scaleY: 0 },
+            hover: { scaleY: 1 }
+          }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 bg-white/[0.03] origin-bottom pointer-events-none"
+        />
+
+        {/* HUD Elements */}
+        <div className="absolute top-4 right-4 flex gap-1 z-10">
+          <div className="w-1.5 h-1.5 bg-white/20 group-hover:bg-white animate-pulse transition-colors"></div>
+          <div className="w-1.5 h-1.5 bg-white/20 group-hover:bg-white transition-colors"></div>
+        </div>
+        <div className="absolute top-4 left-4 text-[9px] text-white/30 tracking-widest group-hover:text-white/60 transition-colors z-10">
+          MOD_0{delay * 10}
+        </div>
+
+        {/* ASCII Art Display */}
+        <div className="flex-1 flex items-center justify-center py-12 relative z-10">
+          <pre className="text-[10px] md:text-[12px] text-white/30 font-mono leading-[1.1] group-hover:text-white transition-all duration-500 group-hover:scale-110 transform">
+            {ascii}
+          </pre>
+        </div>
+
+        {/* Footer Info */}
+        <div className="border-t border-white/20 pt-6 mt-auto relative z-10">
+          <h4 className="font-druk text-[20px] md:text-[24px] uppercase tracking-widest text-white/90 group-hover:text-white leading-none mb-3 transition-colors">
+            {title}
+          </h4>
+          <p className="text-[11px] uppercase tracking-widest text-white/50 group-hover:text-white/80 transition-colors">
+            {description}
+          </p>
+        </div>
+      </motion.div>
     </Reveal>
   );
 }
 
 export function AboutSection() {
+  const containerRef = useRef<HTMLElement>(null);
+  
+  // Smooth Scroll Progress
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
+
+  // Parallax & Marquee Values
+  const gridY = useTransform(smoothProgress, [0, 1], ["0%", "20%"]);
+  const portraitY = useTransform(smoothProgress, [0, 1], ["-10%", "10%"]);
+  const logSectionY = useTransform(smoothProgress, [0, 1], ["10%", "-5%"]);
+  
+  // Tech Stack Opposite Scroll Movement
+  const techRow1X = useTransform(smoothProgress, [0, 1], ["0%", "-30%"]);
+  const techRow2X = useTransform(smoothProgress, [0, 1], ["-30%", "0%"]);
+
+  // Split images into two rows for the marquee
+  const halfLength = Math.ceil(TECH_IMAGES.length / 2);
+  const topImages = [...TECH_IMAGES.slice(0, halfLength), ...TECH_IMAGES.slice(0, halfLength)];
+  const bottomImages = [...TECH_IMAGES.slice(halfLength), ...TECH_IMAGES.slice(halfLength)];
+
   return (
-    <section id="about" className="relative z-10 border-t border-white/10 px-6 py-32 bg-[#050505] min-h-screen">
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
-        style={{
-          backgroundImage: "linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px)",
-          backgroundSize: "40px 40px"
-        }}
-      ></div>
+    <section ref={containerRef} id="about" className="relative z-10 px-6 py-24 bg-[#050505] min-h-screen overflow-hidden">
 
+      {/* HEADER BAR */}
       <Reveal>
-        <div className="mb-16 text-[11px] uppercase tracking-widest text-white/50 relative z-10 flex items-center gap-4">
-          <span className="inline-block w-2 h-2 bg-white/50 animate-pulse"></span>
-          <ScrambleText text="SYS.QUERY // WHOAMI" />
+        <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-white/50 pb-4 relative z-10">
+          <span>ABOUT</span>
+          <span>IDENTITY // 01</span>
+          <span>SYS.QUERY</span>
         </div>
+        <DrawLine delay={0.2} />
       </Reveal>
-      
-      <div className="flex relative z-20 flex-col lg:flex-row items-start gap-16 lg:gap-24">
+
+      {/* MASSIVE TYPOGRAPHY HERO (Now with Snapping Reveal) */}
+      <div className="py-16 md:py-24 relative z-10 w-full flex flex-col font-druk uppercase leading-[0.85] tracking-tight text-[12vw] md:text-[10vw]">
+        <div className="flex justify-between items-start w-full">
+          <SnapTitle delay={0.1}>A</SnapTitle>
+          <SnapTitle delay={0.3}><span className="text-right">CREATIVE</span></SnapTitle>
+        </div>
+        <div className="w-full text-center md:text-left mt-2 md:mt-0">
+          <SnapTitle delay={0.5}>ENGINEER</SnapTitle>
+        </div>
+        <div className="w-full text-right mt-2 md:mt-0 text-white/80">
+          <SnapTitle delay={0.7}>ARCHITECT</SnapTitle>
+        </div>
+      </div>
+
+      <div className="w-full relative z-10 mb-16 lg:mb-24">
+        <DrawLine />
+      </div>
+
+      {/* MASSIVE ASCII GRID & SPLIT BIO STATEMENT */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-12 lg:gap-8 items-center relative z-10 mb-32 w-full">
         
-        {/* Left Column: Sticky ASCII Portrait */}
-        <div className="w-full lg:w-[40%] lg:sticky lg:top-32 relative group flex justify-center pb-12 lg:pb-0">
-          <Reveal delay={0.1}>
-            <div className="w-full max-w-[500px] opacity-70 hover:opacity-100 transition-opacity duration-700 mix-blend-screen">
-              <AsciiPortrait />
-            </div>
+        {/* Left: Bold Statement */}
+        <div className="flex flex-col justify-center order-2 lg:order-1 ">
+          <h3 className="text-3xl md:text-4xl xl:text-5xl uppercase font-druk tracking-wide leading-[1.1] text-white/90">
+            <SnapTitle delay={0.4}>I DESIGN.</SnapTitle> <br className="hidden lg:block"/>
+            <SnapTitle delay={0.5}>I CODE.</SnapTitle> <br className="hidden lg:block"/>
+            <SnapTitle delay={0.6}>I DEPLOY.</SnapTitle>
+          </h3>
+          <Reveal delay={0.8}>
+            <p className="mt-6 text-[11px] leading-relaxed text-white/60 uppercase tracking-widest border-l border-white/20 pl-4">
+              Web platforms & digital experiences made from passion. Working at the intersection of logic and aesthetics.
+            </p>
           </Reveal>
         </div>
 
-        {/* Right Column: Bio & Data */}
-        <div className="flex flex-col flex-1 w-full lg:w-[60%]">
-          
-          <h2 className="text-3xl uppercase leading-[1.05] md:text-5xl font-druk tracking-tight flex flex-col">
-            <ScrambleText text="i design. i code. i deploy." delay={0.1} />
-            <span className="text-white/40 mt-2 text-2xl md:text-3xl">
-              <ScrambleText text="building interfaces made from passion._" delay={0.5} />
-            </span>
-          </h2>
+        {/* Middle: MASSIVE ASCII Portrait */}
+        <div className="w-full flex justify-center opacity-80 mix-blend-screen overflow-visible order-1 lg:order-2">
+          <motion.div style={{ y: portraitY }} className="w-full max-w-full lg:scale-125 xl:scale-150 transform origin-center">
+            <Reveal delay={0.4}>
+              <AsciiPortrait />
+            </Reveal>
+          </motion.div>
+        </div>
 
-          <Reveal delay={0.6}>
-            <div className="mt-12 text-[13px] leading-relaxed text-white/60 uppercase tracking-widest space-y-6 max-w-2xl border-l-2 border-white/10 pl-6 relative">
-              <div className="absolute -left-[5px] top-0 w-2 h-2 bg-white/20"></div>
-              <p>
-                <ScrambleText text="Lead Front End Engineer and digital architect specializing in high-performance, user-centered web platforms and interactive 3D experiences." delay={0.7} />
-              </p>
-              <p>
-                <ScrambleText text="My work lives at the intersection of logic and aesthetics. I design and implement scalable front-end solutions that improve site performance and user engagement, utilizing tools like React, Next.js, Three.js, and Laravel alongside strong UI/UX foundations in Figma." delay={1.2} />
-              </p>
-            </div>
+        {/* Right: Description & Download */}
+        <div className="flex flex-col justify-center items-start lg:items-end text-left lg:text-right order-3">
+          <Reveal delay={0.7}>
+            <p className="text-[12px] xl:text-[13px] leading-relaxed text-white/50 uppercase tracking-widest max-w-[280px]">
+              Lead Front End Engineer specializing in high-performance, user-centered platforms and interactive 3D experiences.
+            </p>
           </Reveal>
 
-          {/* Download Resume Button */}
-          <Reveal delay={1.8} y={15}>
-            <a 
-              href="/Reymark-Boquiron.pdf" 
+          <Reveal delay={0.9} y={10}>
+            <a
+              href="/Reymark-Boquiron.pdf"
               download="Reymark_Boquiron_Resume.pdf"
-              className="inline-flex items-center gap-3 px-8 py-4 mt-8 border border-white/30 bg-black hover:bg-white text-white hover:text-black transition-all duration-300 text-[11px] uppercase tracking-widest group cursor-crosshair w-fit font-bold relative overflow-hidden"
+              className="inline-flex items-center justify-between gap-4 px-6 py-4 mt-12 border border-white/20 hover:bg-white text-white hover:text-black transition-all duration-300 text-[11px] uppercase tracking-widest font-bold w-full max-w-[240px] group"
             >
-              <span className="relative z-10">&gt; EXTRACT_DATA [RESUME.PDF]</span>
-              <span className="relative z-10 group-hover:translate-y-1 transition-transform duration-300">↓</span>
+              <span>Download Resume</span>
+              <span className="group-hover:translate-y-1 transition-transform duration-300">↓</span>
             </a>
           </Reveal>
-
-          {/* Component-Based Personal Info Cards */}
-          <div className="mt-24 space-y-4 max-w-2xl">
-            <Reveal delay={0.2}>
-              <div className="text-[11px] uppercase tracking-widest text-white/50 border-b border-white/20 pb-2 w-fit mb-8 flex items-center gap-2">
-                <span className="text-white/30">#</span>
-                <ScrambleText text="MOUNT /DEV/PERSONAL_ARCHIVES" delay={0.3} />
-              </div>
-            </Reveal>
-
-            <PersonalInfoCard 
-              moduleName="feline_affinity" 
-              content="I love cats." 
-              asciiArt={ASCII_CAT} 
-              delay={0.4} 
-            />
-            
-            <PersonalInfoCard 
-              moduleName="literature_consumption" 
-              content="Reading books." 
-              asciiArt={ASCII_BOOK} 
-              delay={0.6} 
-            />
-            
-            <PersonalInfoCard 
-              moduleName="digital_escapism" 
-              content="Playing games (TFT, MLBB, Roblox)." 
-              asciiArt={ASCII_GAME} 
-              delay={0.8} 
-            />
-          </div>
-
-          {/* EXPERIENCE (HUD Timeline Layout) */}
-          <div className="mt-32 max-w-2xl relative">
-            <Reveal delay={0.2}>
-              <div className="mb-12 text-[11px] uppercase tracking-widest text-white/50 border-b border-white/20 pb-2 w-fit flex items-center gap-2">
-                <span className="text-white/30">#</span>
-                <ScrambleText text="EXEC ./EXPERIENCE.LOG" delay={0.3} />
-              </div>
-            </Reveal>
-            
-            {/* Timeline Track */}
-            <div className="absolute left-[5px] md:left-[140px] top-[80px] bottom-0 w-[1px] bg-white/10 hidden md:block"></div>
-
-            <div className="space-y-16 text-[11px] uppercase tracking-widest">
-              {/* Yamaha */}
-              <Reveal delay={0.4} y={20}>
-                <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4 md:gap-8 group items-start relative">
-                  <span className="text-white/40 group-hover:text-white transition-colors duration-300 md:mt-1 bg-black pr-4 z-10 w-fit">
-                    <ScrambleText text="NOV 2023 - PRES" delay={0.5} />
-                  </span>
-                  
-                  <div className="hidden md:block absolute left-[138px] top-[6px] w-[5px] h-[5px] bg-white/30 group-hover:bg-white group-hover:shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 z-10"></div>
-
-                  <div className="pl-4 md:pl-0 border-l border-white/10 md:border-none">
-                    <div className="text-white font-bold text-[13px] tracking-widest"><ScrambleText text="LEAD FRONT END ENGINEER" delay={0.6} /></div>
-                    <div className="text-white/40 mt-1 mb-6"><ScrambleText text="YAMAHA MOTOR PHILIPPINES INC." delay={0.7} /></div>
-                    <ul className="space-y-3 text-white/60 normal-case tracking-normal text-[12px] leading-relaxed">
-                      <li><span className="text-white/30 mr-2 opacity-50">[+]</span> <ScrambleText text="Led the front-end architecture and full revamp of the corporate web ecosystem, achieving 90% faster performance." delay={0.8} /></li>
-                      <li><span className="text-white/30 mr-2 opacity-50">[+]</span> <ScrambleText text="Designed a scalable component library and design system using React, TypeScript, and Tailwind CSS." delay={1.0} /></li>
-                      <li><span className="text-white/30 mr-2 opacity-50">[+]</span> <ScrambleText text="Built key platforms including the Yamaha Racing website and the YClub community platform." delay={1.2} /></li>
-                    </ul>
-                  </div>
-                </div>
-              </Reveal>
-
-              {/* Chanz IT */}
-              <Reveal delay={0.5} y={20}>
-                <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4 md:gap-8 group items-start relative">
-                  <span className="text-white/40 group-hover:text-white transition-colors duration-300 md:mt-1 bg-black pr-4 z-10 w-fit">
-                    <ScrambleText text="FEB - APR 2023" delay={0.6} />
-                  </span>
-                  
-                  <div className="hidden md:block absolute left-[138px] top-[6px] w-[5px] h-[5px] bg-white/20 group-hover:bg-white transition-all duration-300 z-10"></div>
-
-                  <div className="pl-4 md:pl-0 border-l border-white/10 md:border-none">
-                    <div className="text-white font-bold text-[13px] tracking-widest"><ScrambleText text="FULL STACK WEB DEV INTERN" delay={0.7} /></div>
-                    <div className="text-white/40 mt-1 mb-6"><ScrambleText text="CHANZ IT BUSINESS SOLUTIONS INC." delay={0.8} /></div>
-                    <ul className="space-y-3 text-white/60 normal-case tracking-normal text-[12px] leading-relaxed">
-                      <li><span className="text-white/30 mr-2 opacity-50">[+]</span> <ScrambleText text="Designed and developed a responsive number-to-words converter with Peso-USD currency conversion." delay={0.9} /></li>
-                      <li><span className="text-white/30 mr-2 opacity-50">[+]</span> <ScrambleText text="Implemented a professional gallery website showcasing global tourist destinations with optimized assets." delay={1.1} /></li>
-                    </ul>
-                  </div>
-                </div>
-              </Reveal>
-
-              {/* Freelance */}
-              <Reveal delay={0.6} y={20}>
-                <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4 md:gap-8 group items-start relative">
-                  <span className="text-white/40 group-hover:text-white transition-colors duration-300 md:mt-1 bg-black pr-4 z-10 w-fit">
-                    <ScrambleText text="FREELANCE" delay={0.7} />
-                  </span>
-
-                  <div className="hidden md:block absolute left-[138px] top-[6px] w-[5px] h-[5px] bg-white/20 group-hover:bg-white transition-all duration-300 z-10"></div>
-
-                  <div className="pl-4 md:pl-0 border-l border-white/10 md:border-none">
-                    <div className="text-white font-bold text-[13px] tracking-widest"><ScrambleText text="CREATIVE DEVELOPER" delay={0.8} /></div>
-                    <div className="text-white/40 mt-1 mb-6"><ScrambleText text="GLOBAL / REMOTE" delay={0.9} /></div>
-                    <ul className="space-y-3 text-white/60 normal-case tracking-normal text-[12px] leading-relaxed">
-                      <li><span className="text-white/30 mr-2 opacity-50">[+]</span> <ScrambleText text="Designed responsive websites and portfolios with an emphasis on UX, accessibility, and performance." delay={1.0} /></li>
-                      <li><span className="text-white/30 mr-2 opacity-50">[+]</span> <ScrambleText text="Delivered foundational 3D modeling and animation work for client showcases." delay={1.2} /></li>
-                    </ul>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-
-          {/* EDUCATION (HUD Timeline Layout) */}
-          <div className="mt-24 max-w-2xl relative">
-            <Reveal delay={0.2}>
-              <div className="mb-12 text-[11px] uppercase tracking-widest text-white/50 border-b border-white/20 pb-2 w-fit flex items-center gap-2">
-                <span className="text-white/30">#</span>
-                <ScrambleText text="READ ./EDUCATION.LOG" delay={0.3} />
-              </div>
-            </Reveal>
-
-            <div className="absolute left-[5px] md:left-[140px] top-[80px] bottom-0 w-[1px] bg-white/10 hidden md:block"></div>
-            
-            <div className="space-y-12 text-[11px] uppercase tracking-widest">
-              <Reveal delay={0.4} y={20}>
-                <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4 md:gap-8 group items-start relative">
-                  <span className="text-white/40 group-hover:text-white transition-colors duration-300 md:mt-1 bg-black pr-4 z-10 w-fit">
-                    <ScrambleText text="JAN - OCT 2023" delay={0.5} />
-                  </span>
-
-                  <div className="hidden md:block absolute left-[138px] top-[6px] w-[5px] h-[5px] bg-white/20 group-hover:bg-white transition-all duration-300 z-10"></div>
-
-                  <div className="pl-4 md:pl-0 border-l border-white/10 md:border-none">
-                    <div className="text-white font-bold text-[13px] tracking-widest"><ScrambleText text="RIZAL TECHNOLOGICAL UNIVERSITY" delay={0.6} /></div>
-                    <div className="text-white/40 mt-1 mb-4"><ScrambleText text="PASIG CITY" delay={0.7} /></div>
-                    <div className="text-white/60 normal-case tracking-normal text-[12px] leading-relaxed">
-                      <ScrambleText text="Coursework: Embedded systems, Microprocessors, Web developing." delay={0.8} /> <br/>
-                      <span className="text-white/40"><ScrambleText text="Awards: Academic Achiever, Deans Lister." delay={1.0} /></span>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-
-              <Reveal delay={0.6} y={20}>
-                <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4 md:gap-8 group items-start relative">
-                  <span className="text-white/40 group-hover:text-white transition-colors duration-300 md:mt-1 bg-black pr-4 z-10 w-fit">
-                    <ScrambleText text="2017 - 2019" delay={0.7} />
-                  </span>
-
-                  <div className="hidden md:block absolute left-[138px] top-[6px] w-[5px] h-[5px] bg-white/20 group-hover:bg-white transition-all duration-300 z-10"></div>
-
-                  <div className="pl-4 md:pl-0 border-l border-white/10 md:border-none">
-                    <div className="text-white font-bold text-[13px] tracking-widest"><ScrambleText text="MARIKINA POLYTECHNIC COLLEGE" delay={0.8} /></div>
-                    <div className="text-white/40 mt-1 mb-4"><ScrambleText text="MARIKINA CITY" delay={0.9} /></div>
-                    <div className="text-white/60 normal-case tracking-normal text-[12px] leading-relaxed">
-                      <ScrambleText text="TVL ICT strand focusing on computer software servicing. Completed NC II certification." delay={1.0} />
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-
         </div>
       </div>
 
-      {/* MODERN BENTO-BOX TECH STACK */}
-      <div className="mt-40 relative z-20">
-        <Reveal>
-          <div className="mb-12 text-[11px] uppercase tracking-widest text-white/50 border-b border-white/20 pb-2 w-fit flex items-center gap-2">
-            <span className="text-white/30">#</span>
-            <ScrambleText text="SCAN ./TECH_STACK_MODULES" delay={0.2} />
+      {/* STRUCTURED DATA TABLE (Professional Experience) */}
+      <motion.div style={{ y: logSectionY }} className="relative z-10 w-full mt-24">
+        <Reveal delay={0.2}>
+          <div className="text-[16px] md:text-[24px] font-druk uppercase tracking-widest text-white/50 pb-2 mb-4">
+            // PROFESSIONAL_LOG
           </div>
         </Reveal>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {RESUME_TECH_STACK.map((group, i) => (
-            <Reveal key={group.category} delay={i * 0.15} y={30}>
-              <div className="p-6 border border-white/10 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/30 transition-all duration-500 h-full flex flex-col relative overflow-hidden group">
-                
-                {/* Decorative Top-Right Corner */}
-                <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-white/10 group-hover:border-white/40 transition-colors duration-500"></div>
 
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="p-3 bg-white/5 rounded-sm group-hover:bg-white/10 transition-colors text-white/70 group-hover:text-white">
-                    {group.icon}
-                  </div>
-                  <h3 className="text-[13px] font-bold uppercase tracking-widest text-white/80 group-hover:text-white">
-                    <ScrambleText text={group.category} delay={0.3 + (i * 0.1)} />
-                  </h3>
-                </div>
+        <div className="w-full">
+          <DrawLine delay={0.3} />
+          <IdentityRow
+            col1="NOV 2023 - PRES"
+            col2="LEAD FRONT END ENGINEER"
+            col3="YAMAHA MOTOR PHILIPPINES INC."
+            delay={0.3}
+          />
+          <IdentityRow
+            col1="FEB - APR 2023"
+            col2="FULL STACK WEB DEV INTERN"
+            col3="CHANZ IT BUSINESS SOLUTIONS"
+            delay={0.4}
+          />
+          <IdentityRow
+            col1="FREELANCE"
+            col2="CREATIVE DEVELOPER"
+            col3="GLOBAL / REMOTE"
+            delay={0.5}
+          />
+          <IdentityRow
+            col1="JAN - OCT 2023"
+            col2="EMBEDDED SYSTEMS & WEB"
+            col3="RIZAL TECHNOLOGICAL UNIVERSITY"
+            delay={0.6}
+          />
+        </div>
+      </motion.div>
 
-                {/* Badges/Pills Layout */}
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {group.skills.map((skill, j) => (
-                    <motion.span 
-                      key={skill} 
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.4 + (i * 0.1) + (j * 0.05) }}
-                      className="px-3 py-1.5 text-[10px] uppercase tracking-widest border border-white/10 bg-black text-white/60 group-hover:border-white/40 group-hover:text-white transition-all cursor-crosshair flex items-center gap-2"
-                    >
-                      <span className="text-white/30">&gt;</span> <ScrambleText text={skill} delay={0.5 + (j * 0.05)} />
-                    </motion.span>
-                  ))}
-                </div>
+      {/* GRID LAYOUT (Personal Archives) */}
+      <motion.div style={{ y: logSectionY }} className="relative z-10 w-full mt-32">
+        <Reveal delay={0.2}>
+          <div className="text-[16px] md:text-[24px] font-druk uppercase tracking-widest text-white/50 pb-2 mb-4">
+            // PERSONAL_ARCHIVES
+          </div>
+        </Reveal>
 
+        <div className="w-full mb-8">
+          <DrawLine delay={0.3} />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <ArchiveModule
+            title="FELINE_AFFINITY"
+            description="I LOVE CATS."
+            ascii={ASCII_CAT}
+            delay={0.4}
+          />
+          <ArchiveModule
+            title="LIT_CONSUMPTION"
+            description="READING BOOKS."
+            ascii={ASCII_BOOK}
+            delay={0.5}
+          />
+          <ArchiveModule
+            title="DIGITAL_ESCAPISM"
+            description="PLAYING GAMES (TFT, MLBB, ROBLOX)."
+            ascii={ASCII_GAME}
+            delay={0.6}
+          />
+        </div>
+      </motion.div>
+
+      {/* SCROLL-DRIVEN TECH STACK MARQUEE */}
+      <div className="mt-40 relative z-20 pb-24 overflow-hidden">
+        <Reveal>
+          <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-white/50 pb-4 mb-12">
+            <span className="font-druk text-[16px] md:text-[24px]">TECH_STACK</span>
+            <span>IMG_RENDER_ONLY</span>
+          </div>
+          <DrawLine delay={0.1} />
+        </Reveal>
+
+        <div className="mt-20 flex flex-col gap-12 w-[200vw] -ml-[50vw]">
+          {/* Top Marquee: Scrolls Left */}
+          <motion.div 
+            style={{ x: techRow1X }} 
+            className="flex items-center gap-16 md:gap-24 opacity-80"
+          >
+            {topImages.map((iconSlug, i) => (
+              <div key={`top-${iconSlug}-${i}`} className="w-16 h-16 md:w-24 md:h-24 group shrink-0">
+                <img
+                  src={`https://cdn.simpleicons.org/${iconSlug}/white`}
+                  alt={`${iconSlug} icon`}
+                  className="w-full h-full object-contain opacity-30 hover:opacity-100 hover:scale-110 transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+                />
               </div>
-            </Reveal>
-          ))}
+            ))}
+          </motion.div>
+
+          {/* Bottom Marquee: Scrolls Right */}
+          <motion.div 
+            style={{ x: techRow2X }} 
+            className="flex items-center gap-16 md:gap-24 opacity-80"
+          >
+            {bottomImages.map((iconSlug, i) => (
+              <div key={`bottom-${iconSlug}-${i}`} className="w-16 h-16 md:w-24 md:h-24 group shrink-0">
+                <img
+                  src={`https://cdn.simpleicons.org/${iconSlug}/white`}
+                  alt={`${iconSlug} icon`}
+                  className="w-full h-full object-contain opacity-30 hover:opacity-100 hover:scale-110 transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+                />
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
+
     </section>
   );
 }

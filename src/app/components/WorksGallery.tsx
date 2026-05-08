@@ -85,7 +85,6 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
 
     if (fraction <= 0 || fraction >= 1) return;
 
-    // 1. Made the box in the transitions bigger
     const blockSize = 14; 
     const cols = Math.ceil(width / blockSize);
     const rows = Math.ceil(height / blockSize);
@@ -102,8 +101,6 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
         const distance = slantedSweep - sweepPosition;
         const edge = distance + (noise * 0.6 - 0.3);
 
-        // 2. Made the height of the transition a little bit smaller
-        // Reduced from +/- 0.35 to +/- 0.18
         if (edge > -0.18 && edge < 0.18) {
           ctx.fillStyle = "#050505";
           ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
@@ -126,12 +123,19 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
   };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const exactIndex = latest * (works.length - 1);
-    const disp = Math.round(exactIndex);
+    // We now have works.length full transition stages (instead of works.length - 1)
+    // Stage 0: Intro Wipe -> Project 0
+    // Stage 1: Project 0 Wipe -> Project 1, etc.
+    const exactIndex = latest * works.length;
+    
+    let disp = Math.floor(exactIndex);
+    if (disp >= works.length) disp = works.length - 1;
+    if (disp < 0) disp = 0;
+    
     if (disp !== displayIndex) setDisplayIndex(disp);
 
     const rawFraction = exactIndex % 1; 
-    const delayThreshold = 0.20; 
+    const delayThreshold = 0.10; 
     
     const fraction = Math.max(0, (rawFraction - delayThreshold) / (1 - delayThreshold));
 
@@ -152,10 +156,20 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
 
   const displayWork = works[displayIndex]; 
 
+  // Intro Cover Mask (Wipes away to reveal the first project)
+  const coverWipe = useTransform(scrollYProgress, (latest) => {
+    const exact = latest * works.length;
+    if (exact >= 1) return 1;
+    if (exact <= 0.1) return 0;
+    return (exact - 0.1) / 0.9;
+  });
+  const coverMask = useMotionTemplate`linear-gradient(175deg, transparent calc(${coverWipe} * 200% - 100%), black calc(${coverWipe} * 200%))`;
+
   return (
     <div
       ref={containerRef}
-      style={{ height: `${works.length * 250}vh` }}
+      // Increased the height slightly to account for the new intro stage
+      style={{ height: `${(works.length + 1) * 200}vh` }}
       className="relative w-full bg-black"
     >
       <div className="hidden">
@@ -165,19 +179,34 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
       </div>
 
       <div 
-        // Changed cursor-crosshair to cursor-pointer and added onClick
         className="sticky top-0 h-screen w-full overflow-hidden font-tronica text-white cursor-pointer"
         onClick={() => onSelectWork(displayWork)}
       >
         
+        {/* --- INTRO COVER LAYER (The fix!) --- */}
+        {/* This sits on top of everything and wipes away right as you begin scrolling */}
+        <motion.div 
+          className="absolute inset-0 z-40 bg-[#050505] flex items-center justify-center pointer-events-none"
+          style={{ 
+            WebkitMaskImage: coverMask, 
+            maskImage: coverMask 
+          }}
+        >
+          {/* Faint subtle text so the screen isn't just pure black before the transition */}
+          <div className="font-druk text-[5vw] uppercase text-white/5 tracking-tighter whitespace-nowrap">
+             SYS.INIT_GALLERY
+          </div>
+        </motion.div>
+
         {/* --- BASE IMAGE LAYERS --- */}
         <div className="absolute inset-0 z-0 bg-black">
           {works.map((w, i) => {
             const imgWipe = useTransform(scrollYProgress, (latest) => {
-              const exact = latest * (works.length - 1);
-              if (exact >= i + 1) return 1; 
-              if (exact <= i + 0.2) return 0; 
-              return (exact - (i + 0.2)) / 0.8; 
+              const exact = latest * works.length;
+              const shiftI = i + 1; // Offset by 1 because stage 0 is the intro cover
+              if (exact >= shiftI + 1) return 1; 
+              if (exact <= shiftI + 0.1) return 0; 
+              return (exact - (shiftI + 0.1)) / 0.9; 
             });
 
             const mask = useMotionTemplate`linear-gradient(175deg, transparent calc(${imgWipe} * 200% - 100%), black calc(${imgWipe} * 200%))`;
@@ -196,10 +225,8 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
               />
             );
           })}
-          <div className="absolute inset-0 z-50 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
         </div>
-
-        {/* Removed the Distorted Hover Layers entire section */}
 
         {/* ASCII Canvas Band Layer */}
         <canvas
