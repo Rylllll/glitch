@@ -27,7 +27,7 @@ const OUTSIDE_DATA = [
       "/images/hobbies/photog/house.jpg",
       "/images/hobbies/photog/ride.jpg",
       "/images/hobbies/photog/white.jpg",
-      "/images/hobbies/photog/dof.jpg",
+      "/images/hobbies/photog/dog.jpg",
     ]
   },
   {
@@ -47,17 +47,19 @@ const OUTSIDE_DATA = [
   },
   {
     id: "03",
-    title: "DIGITAL ESCAPISM",
+    title: "video games",
     details: [
-      "↳ PLAYING GAMES (TFT, MLBB, ROBLOX)",
+      "↳ PLAYING GAMES",
       "↳ COMPETITIVE STRATEGY",
       "↳ IMMERSIVE WORLDS",
       "↳ TACTICAL RANKED CLIMBS"
     ],
     images: [
-      "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=1200&auto=format&fit=crop"
+      "/images/hobbies/games/dmc.png",
+      "/images/hobbies/games/lol.png",
+      "/images/hobbies/games/tft.png",
+      "/images/hobbies/games/valorant.png",
+      "/images/hobbies/games/ml.png",
     ]
   }
 ];
@@ -347,7 +349,7 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
             <SnapTitle delay={0.3}>THE</SnapTitle>
           </h2>
           <h2 className="font-druk text-[10vw] md:text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
-            <SnapTitle delay={0.5}>SCREEN.</SnapTitle>
+            <SnapTitle delay={0.5}>code .</SnapTitle>
           </h2>
         </div>
 
