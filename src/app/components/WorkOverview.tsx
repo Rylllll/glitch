@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { GlitchText } from "./glitch-text";
-import { WORKS, TECH_STACK } from "../../data/data";
+// Update the import to bring in both arrays
+import { WORK_PROJECTS, PERSONAL_PROJECTS, TECH_STACK } from "../../data/data";
 
 const SPHERE_POSITIONS = [
   { rotY: 0, rotX: 0 },
@@ -13,6 +14,9 @@ const SPHERE_POSITIONS = [
   { rotY: 90, rotX: -30 },
   { rotY: -90, rotX: 30 },
 ];
+
+// Combine the works into one array for the overview page to traverse
+const ALL_WORKS = [...WORK_PROJECTS, ...PERSONAL_PROJECTS];
 
 function TypewriterText({ text, delay = 0, speed = 30 }: { text: string, delay?: number, speed?: number }) {
   const [displayed, setDisplayed] = useState("");
@@ -72,9 +76,11 @@ export function WorkOverview() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hoveredWorkSlug, setHoveredWorkSlug] = useState<string | null>(null);
 
-  const work = WORKS.find((w) => w.slug === slug);
+  // Search through the combined array
+  const work = ALL_WORKS.find((w) => w.slug === slug);
 
-  const activeHoverIndex = WORKS.findIndex((w) => w.slug === hoveredWorkSlug);
+  // Find index in the combined array
+  const activeHoverIndex = ALL_WORKS.findIndex((w) => w.slug === hoveredWorkSlug);
   const mapOffset = activeHoverIndex !== -1 
     ? SPHERE_POSITIONS[activeHoverIndex % SPHERE_POSITIONS.length] 
     : { rotY: 0, rotX: 0 };
@@ -146,7 +152,7 @@ export function WorkOverview() {
               }}
               transition={{ type: "spring", damping: 28, stiffness: 60 }}
             >
-              {WORKS.map((w, index) => {
+              {ALL_WORKS.map((w, index) => {
                 const pos = SPHERE_POSITIONS[index % SPHERE_POSITIONS.length];
                 const isFocused = hoveredWorkSlug === w.slug;
                 const sphereRadius = window.innerWidth < 768 ? 500 : 900;
@@ -268,7 +274,7 @@ export function WorkOverview() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="flex flex-col overflow-hidden pl-2 md:pl-[55px] pt-2 drop-shadow-lg bg-black/80 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none p-4 md:p-0 rounded-md md:rounded-none" 
             >
-              {WORKS.map((w) => (
+              {ALL_WORKS.map((w) => (
                 <span 
                   key={w.slug}
                   onMouseEnter={() => setHoveredWorkSlug(w.slug)} 

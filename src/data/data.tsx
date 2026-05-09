@@ -1,4 +1,47 @@
-export const WORKS = [
+export const WORK_PROJECTS = [
+  {
+    slug: "yamaha-ph",
+    title: "YAMAHA PH",
+    client: "Yamaha Motor Philippines",
+    type: "Brand Website",
+    date: "2025",
+    image: "/images/yamaha/bg.png",
+    images: [
+      "/images/yamaha/1.png",
+      "/images/yamaha/2.png",
+      "/images/yamaha/3.png",
+      "/images/yamaha/4.png",
+      "/images/yamaha/5.png",
+    ],
+    description: "the official Philippine website of Yamaha Motor Philippines, Inc., focused on motorcycles, scooters, riding culture, and customer services. It serves as both a brand showcase and a digital platform for Yamaha riders in the Philippines. The site highlights Yamaha’s motorcycle lineup such as Mio, Aerox, NMAX, Sniper, and PG-1 models, along with dealer locators, service support, promotions, events, loyalty programs, and rider communities. Visually, the website uses a modern, sporty, and high-energy design style with bold typography, cinematic banners, dark-themed sections, dynamic motion graphics, and racing-inspired visuals to reflect speed, lifestyle, and performance culture.",
+    techStack: ["Next.js", "Tailwind CSS", "Motion", "AWS", "Laravel"],
+    link: "https://www.yamaha-motor.com.ph/"
+  },
+  {
+    slug: "yamaha-racing-ph",
+    title: "Yamaha Racing PH",
+    client: "Yamaha Motor Philippines",
+    type: "Brand Website",
+    date: "2025",
+    image: "/images/racing/bg.png",
+    images: [
+      "/images/racing/1.png",
+      "/images/racing/2.png",
+      "/images/racing/3.png",
+      "/images/racing/4.png",
+      "/images/racing/5.png",
+      "/images/racing/6.png",
+      "/images/racing/7.png",
+      "/images/racing/8.png",
+    ],
+    description: "The Yamaha Racing Philippines website is a motorsports-focused subsite of Yamaha Motor Philippines dedicated to Yamaha’s racing culture, competitive teams, riders, and performance identity in the Philippines. Unlike the main Yamaha website which focuses on selling motorcycles and lifestyle branding, this section is specifically designed to showcase Yamaha’s involvement in motorcycle racing, track events, rider development, and motorsport communities",
+    techStack: ["Next.js", "Tailwind CSS", "Motion", "AWS", "Laravel"],
+    link: "https://www.yamaha-motor.com.ph/yamaha-racing"
+  },
+
+];
+
+export const PERSONAL_PROJECTS = [
   {
     slug: "pokedex-ph",
     title: "Pokedex PH",
@@ -21,7 +64,7 @@ export const WORKS = [
     link: "https://pokemon-ph.rynath.dev/"
   },
   {
-    slug: "Curators archive",
+    slug: "curators-archive",
     title: "Curators archive",
     client: "Personal Project",
     type: "Information website",
@@ -59,55 +102,7 @@ export const WORKS = [
     description: "A digital flower encyclopedia wrapped in an elegant and minimal aesthetic. It presents itself as a living archive of flowers, where visitors can browse and search through thousands of blooms while exploring their meanings, symbolism, histories, classifications, and growing details.",
     techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Figma"],
     link: "https://flower-archive.rynath.dev/"
-  },
-  {
-    slug: "sunflower",
-    title: "AFTERGLOW",
-    client: "NIKE",
-    type: "BRAND FILM",
-    date: "2024",
-    image: "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=3087&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=3174&auto=format&fit=crop"
-    ],
-    description: "A web-based digital lookbook for Nike's experimental streetwear line. Afterglow utilizes smooth scroll hijacking, dynamic typographic masks, and cinematic transitions to mirror the energy of the brand.",
-    techStack: ["Next.js", "Lenis Scroll", "Motion", "Supabase"],
-    link: "https://pokemon-ph.rynath.dev/"
-  },
-  {
-    slug: "Yamaha PH",
-    title: "AFTERGLOW",
-    client: "NIKE",
-    type: "BRAND FILM",
-    date: "2024",
-    image: "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=3087&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=3174&auto=format&fit=crop"
-    ],
-    description: "A web-based digital lookbook for Nike's experimental streetwear line. Afterglow utilizes smooth scroll hijacking, dynamic typographic masks, and cinematic transitions to mirror the energy of the brand.",
-    techStack: ["Next.js", "Lenis Scroll", "Motion", "Supabase"],
-    link: "https://pokemon-ph.rynath.dev/"
-  },
-  {
-    slug: "Yamaha Racing PH",
-    title: "AFTERGLOW",
-    client: "NIKE",
-    type: "BRAND FILM",
-    date: "2024",
-    image: "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1773332585698-cba3c91b73e4?q=80&w=1169&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=3087&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=3174&auto=format&fit=crop"
-    ],
-    description: "A web-based digital lookbook for Nike's experimental streetwear line. Afterglow utilizes smooth scroll hijacking, dynamic typographic masks, and cinematic transitions to mirror the energy of the brand.",
-    techStack: ["Next.js", "Lenis Scroll", "Motion", "Supabase"],
-    link: "https://pokemon-ph.rynath.dev/"
-  },
+  }
 ];
 
 export const TECH_STACK = [

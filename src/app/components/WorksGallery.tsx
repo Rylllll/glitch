@@ -1,3 +1,5 @@
+"use client";
+
 import { 
   motion, 
   useScroll, 
@@ -56,7 +58,15 @@ function TypewriterText({ text, delay = 0, speed = 30 }: { text: string, delay?:
   );
 }
 
-export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWork: (work: any) => void }) {
+export function WorksGallery({ 
+  works, 
+  onSelectWork,
+  introText = "Projects" 
+}: { 
+  works: any[], 
+  onSelectWork: (work: any) => void,
+  introText?: string
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -73,7 +83,6 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
   const renderCanvas = (fraction: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    // Don't render canvas on mobile (hidden elements return 0 offsetWidth)
     if (canvas.offsetWidth === 0) return; 
 
     const ctx = canvas.getContext("2d");
@@ -128,7 +137,11 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const exactIndex = latest * works.length;
     
-    let disp = Math.floor(exactIndex);
+    // --- FIX APPLIED HERE ---
+    // Subtracting 0.55 delays the index update until the visual wipe is halfway done.
+    // The visual wipe happens between n.1 and n.99. Midpoint is ~n.55.
+    let disp = Math.floor(exactIndex - 0.55);
+    
     if (disp >= works.length) disp = works.length - 1;
     if (disp < 0) disp = 0;
     
@@ -173,7 +186,7 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
       <div className="md:hidden flex flex-col gap-6 px-4 py-20 w-full bg-black relative z-10 font-tronica text-white">
         
         <div className="flex items-center justify-between text-[10px] text-white/50 tracking-widest uppercase mb-4 border-b border-white/20 pb-4">
-          <span>◉ SELECTED WORKS</span>
+          <span>◉ {introText}</span>
           <span>// {String(works.length).padStart(2, "0")}</span>
         </div>
 
@@ -226,13 +239,11 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
         </div>
       </div>
 
-
       {/* ---------------------------------------------------------------- */}
       {/* DESKTOP STICKY SCROLL LAYOUT (Visible only >= 768px)               */}
       {/* ---------------------------------------------------------------- */}
       <div
         ref={containerRef}
-        // Hidden on mobile prevents this giant container from ruining the mobile scroll height
         className="hidden md:block relative w-full bg-black font-tronica text-white"
         style={{ height: `${(works.length + 1) * 200}vh` }}
       >
@@ -267,7 +278,7 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
               viewport={{ once: true, margin: "-15%" }}
               className="font-druk text-[5vw] uppercase text-white/20 tracking-tighter whitespace-nowrap"
             >
-               Projects
+               {introText}
             </motion.div>
           </motion.div>
 
@@ -310,7 +321,7 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
 
           {/* MIDDLE ROW (UI) */}
           <div className="absolute inset-x-0 top-1/2 z-30 flex -translate-y-1/2 items-center justify-between px-6 text-[11px] uppercase tracking-widest text-white/80 pointer-events-none">
-            <span>◉ SELECTED WORKS</span>
+            <span>◉ {introText}</span>
             <span className="text-white/60 absolute left-1/2 -translate-x-1/2 w-8 text-center">
               <TypewriterText text={`/${String(displayIndex + 1).padStart(2, "0")}`} />
             </span>

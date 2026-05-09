@@ -11,7 +11,8 @@ import { WorkOverview } from "./components/WorkOverview";
 import { AboutSection } from "./components/about";
 
 // --- IMPORT DATA HERE ---
-import { WORKS, TECH_STACK } from "../data/data";
+// Updated to import both arrays
+import { WORK_PROJECTS, PERSONAL_PROJECTS, TECH_STACK } from "../data/data";
 
 // --- GLOBAL CANVAS GLITCH (Moving Particles) ---
 function GlobalGlitchBackground() {
@@ -300,9 +301,18 @@ function MainLayout() {
       <AboutSection />
 
       {/* SELECTED WORKS */}
-      <div id="works" className="relative z-10 w-full bg-black"> {/* Added pt/mt for offset */}
+      <div id="works" className="relative z-10 w-full bg-black">
+        {/* Render Work Projects first */}
         <WorksGallery
-          works={WORKS}
+          works={WORK_PROJECTS}
+          introText="Work Projects"
+          onSelectWork={(work) => navigate(`/work/${work.slug}`)}
+        />
+        
+        {/* Render Personal Projects second */}
+        <WorksGallery
+          works={PERSONAL_PROJECTS}
+          introText="Personal Projects"
           onSelectWork={(work) => navigate(`/work/${work.slug}`)}
         />
       </div>

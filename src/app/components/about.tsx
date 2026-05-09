@@ -34,15 +34,15 @@ const OUTSIDE_DATA = [
     id: "02",
     title: "hiking",
     details: [
-      "↳ READING BOOKS",
-      "↳ CONTINUOUS LEARNING",
-      "↳ CYBERPUNK & DYSTOPIAN FICTION",
-      "↳ TECHNICAL DOCUMENTATION"
+      "↳ I love to Hike",
+      "↳ Adrenaline!!!",
+      "↳ I feel so alive",
+      "↳ The wind is cold"
     ],
     images: [
-      "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618335824168-963a4d80a133?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1515098501763-7eb58ab9a3e2?q=80&w=1200&auto=format&fit=crop"
+     "/images/hobbies/hiking/1.jpg",
+     "/images/hobbies/hiking/2.jpg",
+     "/images/hobbies/hiking/3.jpg",
     ]
   },
   {
