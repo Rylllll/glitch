@@ -192,10 +192,21 @@ export function WorksGallery({ works, onSelectWork }: { works: any[], onSelectWo
             maskImage: coverMask 
           }}
         >
-          {/* Faint subtle text so the screen isn't just pure black before the transition */}
-          <div className="font-druk text-[5vw] uppercase text-white/5 tracking-tighter whitespace-nowrap">
-             SYS.INIT_GALLERY
-          </div>
+          {/* Scrolling Glitch Reveal Text */}
+          <motion.div 
+            initial={{ opacity: 0, filter: "blur(10px)" }}
+            whileInView={{ 
+              opacity: [0, 1, 0.1, 1, 0.4, 1],
+              x: [-20, 15, -15, 5, -5, 0],
+              skewX: [20, -20, 10, -10, 5, 0],
+              filter: ["blur(10px)", "blur(0px)", "blur(4px)", "blur(0px)"]
+            }}
+            transition={{ duration: 0.5, ease: "circOut" }}
+            viewport={{ once: true, margin: "-15%" }}
+            className="font-druk text-[5vw] uppercase text-white/5 tracking-tighter whitespace-nowrap"
+          >
+             Projects
+          </motion.div>
         </motion.div>
 
         {/* --- BASE IMAGE LAYERS --- */}

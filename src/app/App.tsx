@@ -13,7 +13,7 @@ import { AboutSection } from "./components/about";
 // --- IMPORT DATA HERE ---
 import { WORKS, TECH_STACK } from "../data/data";
 
-// --- NEW COMPONENT: GLOBAL CANVAS GLITCH ---
+// --- NEW COMPONENT: GLOBAL CANVAS GLITCH (Moving Particles) ---
 function GlobalGlitchBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -23,56 +23,85 @@ function GlobalGlitchBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let animationFrameId: number;
+    let particles: any[] = [];
+
+    const chars = "0123456789!@#$%^&*()_+-=[]{}|;':,./<>?ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    // Initialize the floating symbols
+    const initParticles = () => {
+      particles = [];
+      // Adjust particle count based on screen size so it isn't too crowded
+      const numParticles = Math.floor((window.innerWidth * window.innerHeight) / 12000); 
+      
+      for (let i = 0; i < numParticles; i++) {
+        const length = Math.floor(Math.random() * 4) + 1; // Strings of 1 to 4 chars
+        let str = "";
+        for (let j = 0; j < length; j++) {
+          str += chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 1.5, // Random X velocity
+          vy: (Math.random() - 0.5) * 1.5, // Random Y velocity
+          text: str,
+          size: Math.floor(Math.random() * 14) + 8, // Font size 8px to 22px
+          opacity: Math.random() * 0.15 + 0.02, // Very subtle opacity
+          length: length
+        });
+      }
+    };
+
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      initParticles(); // Re-initialize particles to fill new dimensions
     };
+
     resize();
     window.addEventListener("resize", resize);
 
-    const chars = "0123456789!@#$%^&*()_+-=[]{}|;':,./<>?ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let timeoutId: number;
-
     const draw = () => {
-      // Clear the canvas every frame to keep it sharp and erratic
+      // Clear the canvas every frame for smooth movement
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Randomly decide if we draw a glitch this frame (creates a sporadic feel)
-      if (Math.random() > 0.3) {
-        const numGlitches = Math.floor(Math.random() * 10) + 3; // 3 to 13 glitch blocks per frame
+      particles.forEach((p) => {
+        // Move particle
+        p.x += p.vx;
+        p.y += p.vy;
 
-        for (let i = 0; i < numGlitches; i++) {
-          const x = Math.random() * canvas.width;
-          const y = Math.random() * canvas.height;
-          const length = Math.floor(Math.random() * 25) + 5; // String length
-          
-          let glitchStr = "";
-          for (let j = 0; j < length; j++) {
-            glitchStr += chars[Math.floor(Math.random() * chars.length)];
+        // Screen Wrap-around (Endless loop)
+        if (p.x > canvas.width + 50) p.x = -50;
+        else if (p.x < -50) p.x = canvas.width + 50;
+        
+        if (p.y > canvas.height + 50) p.y = -50;
+        else if (p.y < -50) p.y = canvas.height + 50;
+
+        // Randomly scramble the text to keep the "glitch" feel alive
+        if (Math.random() > 0.95) {
+          let str = "";
+          for (let j = 0; j < p.length; j++) {
+            str += chars[Math.floor(Math.random() * chars.length)];
           }
-
-          // Randomize opacity and size for depth perception
-          const opacity = Math.random() * 0.15 + 0.02; // 0.02 to 0.17 opacity
-          const fontSize = Math.floor(Math.random() * 10) + 8; // 8px to 18px
-          
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-          ctx.font = `${fontSize}px monospace`;
-          ctx.fillText(glitchStr, x, y);
+          p.text = str;
         }
-      }
 
-      // Erratic update rate for a "broken" feel (between 30ms and 150ms)
-      const nextFrameTime = Math.random() * 120 + 30;
-      timeoutId = window.setTimeout(() => {
-        requestAnimationFrame(draw);
-      }, nextFrameTime);
+        // Draw the moving text
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.font = `${p.size}px monospace`;
+        ctx.fillText(p.text, p.x, p.y);
+      });
+
+      animationFrameId = requestAnimationFrame(draw);
     };
 
     draw();
 
     return () => {
       window.removeEventListener("resize", resize);
-      clearTimeout(timeoutId);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
@@ -96,8 +125,10 @@ function MainLayout() {
       <GlobalGlitchBackground />
 
       {/* --- GLOBAL STICKY NAVBAR --- */}
-      <header className="fixed top-0 inset-x-0 z-50 grid grid-cols-4 items-start p-6 text-[11px] uppercase tracking-widest pointer-events-none mix-blend-difference">
-        <div className="text-white font-extrabold pointer-events-auto">reymark</div>
+      <header className="fixed top-0 inset-x-0 z-50 justify-between flex w-full items-start p-6 text-[11px] uppercase tracking-widest pointer-events-none mix-blend-difference">
+        <div className="text-white font-bold pointer-events-auto">
+          <img src="/images/logo.png" className="w-[10rem] object-contain" alt="" />
+        </div>
 
         <nav className="flex flex-col gap-1 pointer-events-auto">
           <a href="#works" className="hover:text-white/60 transition w-fit">

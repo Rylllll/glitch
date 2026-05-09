@@ -1,31 +1,6 @@
-import { ReactNode, useRef } from "react";
+import { ReactNode, useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import { AsciiPortrait } from "./ascii-portrait";
-
-// --- ASCII ART ASSETS ---
-const ASCII_CAT = `
-   |\\__/,|   (\`\\
- _.|o o  |_   ) )
--(((---(((--------
-`;
-
-const ASCII_BOOK = `
-  ______ ______
- _/      Y      \\_
-// ~~ ~~ | ~~ ~  \\\\
-// ~ ~ ~~ | ~~~ ~~ \\\\
-//________.|.________\\\\
-\`----------\`-'----------'
-`;
-
-const ASCII_GAME = `
-  .-----------.
- /  __     __  \\
-|  |__|   |__|  |
-|               |
- \\  [+]   (A)  /
-  '-----------'
-`;
 
 // Map your data items to official SimpleIcons slugs
 const TECH_IMAGES = [
@@ -33,6 +8,43 @@ const TECH_IMAGES = [
   "threedotjs", "webgl", "greensock", "html5", "opengl",
   "nodedotjs", "postgresql", "supabase", "graphql",
   "figma", "adobecreativecloud", "git", "vercel"
+];
+
+// --- OUTSIDE THE SCREEN DATA ---
+const OUTSIDE_DATA = [
+  {
+    id: "01",
+    title: "FELINE AFFINITY",
+    details: [
+      "↳ I LOVE CATS",
+      "↳ DAILY COMPANIONSHIP",
+      "↳ CALMING PRESENCE",
+      "↳ ORGANIC STRESS RELIEF"
+    ],
+    image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: "02",
+    title: "LIT CONSUMPTION",
+    details: [
+      "↳ READING BOOKS",
+      "↳ CONTINUOUS LEARNING",
+      "↳ CYBERPUNK & DYSTOPIAN FICTION",
+      "↳ TECHNICAL DOCUMENTATION"
+    ],
+    image: "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: "03",
+    title: "DIGITAL ESCAPISM",
+    details: [
+      "↳ PLAYING GAMES (TFT, MLBB, ROBLOX)",
+      "↳ COMPETITIVE STRATEGY",
+      "↳ IMMERSIVE WORLDS",
+      "↳ TACTICAL RANKED CLIMBS"
+    ],
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop"
+  }
 ];
 
 // Upgraded Reveal
@@ -62,7 +74,7 @@ function DrawLine({ delay = 0 }: { delay?: number }) {
   );
 }
 
-// NEW: Snapping + Fast Blink Reveal for Titles
+// Snapping + Fast Blink Reveal for Titles
 export function SnapTitle({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return (
     <span className="overflow-hidden inline-block align-bottom py-1 -my-1">
@@ -128,50 +140,220 @@ function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: React
   );
 }
 
-// Brutalist Data Module (For Personal Archives)
-function ArchiveModule({ title, description, ascii, delay }: { title: string; description: string; ascii: string; delay: number }) {
+// NEW: Hardware Accelerated Mouse Block Glitch Image (Smooth Pushing Effect)
+function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mouse = useRef({ x: -1000, y: -1000 });
+  const isHovering = useRef(false);
+  
+  // We use an offscreen pristine canvas so we sample from the un-distorted image
+  const pristineCanvas = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d", { willReadFrequently: true });
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = src;
+
+    let animationId: number;
+
+    const draw = () => {
+      if (!canvas || !ctx || !containerRef.current) return;
+      const width = containerRef.current.clientWidth;
+      const height = containerRef.current.clientHeight;
+      
+      let needsPristineUpdate = false;
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        needsPristineUpdate = true;
+      }
+
+      if (!pristineCanvas.current) {
+        pristineCanvas.current = document.createElement("canvas");
+        needsPristineUpdate = true;
+      }
+
+      const pCanvas = pristineCanvas.current;
+      const pCtx = pCanvas.getContext("2d");
+
+      if (needsPristineUpdate && pCtx) {
+        pCanvas.width = width;
+        pCanvas.height = height;
+        
+        // Calculate Object-cover dimensions
+        const imgRatio = img.width / img.height;
+        const canvasRatio = width / height;
+        let drawW = width;
+        let drawH = height;
+        let drawX = 0;
+        let drawY = 0;
+
+        if (imgRatio > canvasRatio) {
+          drawW = height * imgRatio;
+          drawX = (width - drawW) / 2;
+        } else {
+          drawH = width / imgRatio;
+          drawY = (height - drawH) / 2;
+        }
+        
+        pCtx.clearRect(0, 0, width, height);
+        pCtx.drawImage(img, drawX, drawY, drawW, drawH);
+      }
+
+      // 1. Draw the clean baseline image every frame
+      ctx.clearRect(0, 0, width, height);
+      if (pCanvas) {
+        ctx.drawImage(pCanvas, 0, 0);
+      }
+
+      // 2. Apply the smooth, tiny-pixel pushing distortion
+      if (isHovering.current && pCanvas) {
+        const mx = mouse.current.x;
+        const my = mouse.current.y;
+        
+        // Settings for the "push"
+        const blockSize = 3;  // Smaller pixels for finer glitch
+        const radius = 220;   // Area of effect
+        const maxPush = 90;   // Maximum pixel displacement
+
+        const startX = Math.max(0, mx - radius);
+        const startY = Math.max(0, my - radius);
+        const endX = Math.min(width, mx + radius);
+        const endY = Math.min(height, my + radius);
+
+        for (let y = startY; y < endY; y += blockSize) {
+          for (let x = startX; x < endX; x += blockSize) {
+            const dx = mx - x;
+            const dy = my - y;
+            const dist = Math.hypot(dx, dy) || 1; // Prevent div by zero
+            
+            if (dist < radius) {
+              // Create a smooth easing curve for the "push" effect
+              const force = Math.pow(1 - dist / radius, 1.8); 
+              
+              // Shift coordinates to sample pixels closer to cursor, pushing them outward (+)
+              let srcX = x + (dx / dist) * force * maxPush;
+              let srcY = y + (dy / dist) * force * maxPush;
+              
+              // Snap source coordinates to the block grid to keep it distinctly pixelated
+              srcX = Math.floor(srcX / blockSize) * blockSize;
+              srcY = Math.floor(srcY / blockSize) * blockSize;
+
+              // Occasional horizontal glitch tear
+              if (Math.random() > 0.88) {
+                srcX += (Math.random() > 0.5 ? 1 : -1) * blockSize;
+              }
+
+              ctx.drawImage(
+                pCanvas, 
+                srcX, srcY, blockSize, blockSize, 
+                x, y, blockSize, blockSize
+              );
+            }
+          }
+        }
+      }
+      animationId = requestAnimationFrame(draw);
+    };
+
+    img.onload = () => draw();
+    return () => cancelAnimationFrame(animationId);
+  }, [src]);
+
+  return (
+    <motion.div 
+      ref={containerRef} 
+      key={src}
+      initial={{ opacity: 0, scale: 1.05 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="absolute inset-0 w-full h-full overflow-hidden bg-black"
+      onMouseMove={(e) => {
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (rect) {
+          mouse.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+      }}
+      onMouseEnter={() => (isHovering.current = true)}
+      onMouseLeave={() => (isHovering.current = false)}
+    >
+      <canvas ref={canvasRef} className="w-full h-full block cursor-crosshair" />
+    </motion.div>
+  );
+}
+
+// Exact Replica Interactive Layout for "Outside the Screen"
+function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeData = OUTSIDE_DATA[activeIndex];
+
   return (
     <Reveal delay={delay} y={20}>
-      <motion.div 
-        initial="initial"
-        whileHover="hover"
-        className="relative border border-white/20 bg-black p-6 md:p-8 flex flex-col h-full group cursor-crosshair overflow-hidden"
-      >
-        <motion.div
-          variants={{
-            initial: { scaleY: 0 },
-            hover: { scaleY: 1 }
-          }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-0 bg-white/[0.03] origin-bottom pointer-events-none"
-        />
-
-        {/* HUD Elements */}
-        <div className="absolute top-4 right-4 flex gap-1 z-10">
-          <div className="w-1.5 h-1.5 bg-white/20 group-hover:bg-white animate-pulse transition-colors"></div>
-          <div className="w-1.5 h-1.5 bg-white/20 group-hover:bg-white transition-colors"></div>
-        </div>
-        <div className="absolute top-4 left-4 text-[9px] text-white/30 tracking-widest group-hover:text-white/60 transition-colors z-10">
-          MOD_0{delay * 10}
+      <div className="relative w-full mt-8">
+        {/* Massive Header embedded in the grid layout */}
+        <div className="w-full pt-12 pb-6 border-b flex flex-wrap gap-x-4">
+          <h2 className="font-druk text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
+            <SnapTitle delay={0.1}>OUTSIDE</SnapTitle>
+          </h2>
+          <h2 className="font-druk text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
+            <SnapTitle delay={0.3}>THE</SnapTitle>
+          </h2>
+          <h2 className="font-druk text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
+            <SnapTitle delay={0.5}>SCREEN.</SnapTitle>
+          </h2>
         </div>
 
-        {/* ASCII Art Display */}
-        <div className="flex-1 flex items-center justify-center py-12 relative z-10">
-          <pre className="text-[10px] md:text-[12px] text-white/30 font-mono leading-[1.1] group-hover:text-white transition-all duration-500 group-hover:scale-110 transform">
-            {ascii}
-          </pre>
-        </div>
+        {/* Split Container */}
+        <div className="flex flex-col lg:flex-row w-full h-auto min-h-[500px] gap-4 mt-4">
+          
+          {/* Left Column (Menu & Details) */}
+          <div className="w-full lg:w-1/2 flex flex-col">
+            {/* Interactive Categories */}
+            <div className="flex flex-col items-start">
+              {OUTSIDE_DATA.map((item, idx) => {
+                const isActive = activeIndex === idx;
+                return (
+                  <div 
+                    key={item.id}
+                    onMouseEnter={() => setActiveIndex(idx)}
+                    onClick={() => setActiveIndex(idx)}
+                    className={`cursor-pointer w-full font-druk uppercase font-extrabold text-[2rem] sm:text-[28px] md:text-[1.2rem] tracking-wide ${
+                      isActive 
+                        ? "bg-white text-black px-3 py-0.5" 
+                        : "text-white/40 hover:text-white/70 px-3 py-0.5"
+                    }`}
+                  >
+                    {item.title}
+                  </div>
+                );
+              })}
+            </div>
 
-        {/* Footer Info */}
-        <div className="border-t border-white/20 pt-6 mt-auto relative z-10">
-          <h4 className="font-druk text-[20px] md:text-[24px] uppercase tracking-widest text-white/90 group-hover:text-white leading-none mb-3 transition-colors">
-            {title}
-          </h4>
-          <p className="text-[11px] uppercase tracking-widest text-white/50 group-hover:text-white/80 transition-colors">
-            {description}
-          </p>
+            {/* Bottom Bulleted Details */}
+            <div className="mt-auto pt-16 flex flex-col gap-2 font-mono text-[10px] md:text-[11px] tracking-widest text-white/70 uppercase font-bold mb-6 lg:mb-0">
+              {activeData.details.map((detail, i) => (
+                <motion.div 
+                  key={`${activeIndex}-${i}`}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: i * 0.1 }}
+                >
+                  {detail}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column (Dynamic Glitch Image) */}
+          <div className="w-full lg:w-1/2 h-[400px] lg:h-auto relative overflow-hidden bg-black border-l border-white/10">
+            <BlockyGlitchImage src={activeData.image} alt={activeData.title} />
+          </div>
+
         </div>
-      </motion.div>
+      </div>
     </Reveal>
   );
 }
@@ -316,38 +498,9 @@ export function AboutSection() {
         </div>
       </motion.div>
 
-      {/* GRID LAYOUT (Personal Archives) */}
+      {/* NEW INTERACTIVE LAYOUT (Replaces Personal Archives) */}
       <motion.div style={{ y: logSectionY }} className="relative z-10 w-full mt-32">
-        <Reveal delay={0.2}>
-          <div className="text-[16px] md:text-[24px] font-druk uppercase tracking-widest text-white/50 pb-2 mb-4">
-            // PERSONAL_ARCHIVES
-          </div>
-        </Reveal>
-
-        <div className="w-full mb-8">
-          <DrawLine delay={0.3} />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <ArchiveModule
-            title="FELINE_AFFINITY"
-            description="I LOVE CATS."
-            ascii={ASCII_CAT}
-            delay={0.4}
-          />
-          <ArchiveModule
-            title="LIT_CONSUMPTION"
-            description="READING BOOKS."
-            ascii={ASCII_BOOK}
-            delay={0.5}
-          />
-          <ArchiveModule
-            title="DIGITAL_ESCAPISM"
-            description="PLAYING GAMES (TFT, MLBB, ROBLOX)."
-            ascii={ASCII_GAME}
-            delay={0.6}
-          />
-        </div>
+        <OutsideScreenInteractive delay={0.3} />
       </motion.div>
 
       {/* SCROLL-DRIVEN TECH STACK MARQUEE */}
