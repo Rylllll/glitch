@@ -1,5 +1,5 @@
 import { ReactNode, useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "motion/react";
 import { AsciiPortrait } from "./ascii-portrait";
 
 // Map your data items to official SimpleIcons slugs
@@ -14,25 +14,36 @@ const TECH_IMAGES = [
 const OUTSIDE_DATA = [
   {
     id: "01",
-    title: "FELINE AFFINITY",
+    title: "photography",
     details: [
-      "↳ I LOVE CATS",
-      "↳ DAILY COMPANIONSHIP",
-      "↳ CALMING PRESENCE",
-      "↳ ORGANIC STRESS RELIEF"
+      "↳ I LOVE taking pictures",
+      "↳ view different flowers",
+      "↳ explore different sceneries",
+      "↳ One of my fave hobbies"
     ],
-    image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=1200&auto=format&fit=crop"
+    images: [
+      "/images/hobbies/photog/car.jpg",
+      "/images/hobbies/photog/bird.jpg",
+      "/images/hobbies/photog/house.jpg",
+      "/images/hobbies/photog/ride.jpg",
+      "/images/hobbies/photog/white.jpg",
+      "/images/hobbies/photog/dof.jpg",
+    ]
   },
   {
     id: "02",
-    title: "LIT CONSUMPTION",
+    title: "hiking",
     details: [
       "↳ READING BOOKS",
       "↳ CONTINUOUS LEARNING",
       "↳ CYBERPUNK & DYSTOPIAN FICTION",
       "↳ TECHNICAL DOCUMENTATION"
     ],
-    image: "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?q=80&w=1200&auto=format&fit=crop"
+    images: [
+      "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1618335824168-963a4d80a133?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1515098501763-7eb58ab9a3e2?q=80&w=1200&auto=format&fit=crop"
+    ]
   },
   {
     id: "03",
@@ -43,7 +54,11 @@ const OUTSIDE_DATA = [
       "↳ IMMERSIVE WORLDS",
       "↳ TACTICAL RANKED CLIMBS"
     ],
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop"
+    images: [
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=1200&auto=format&fit=crop"
+    ]
   }
 ];
 
@@ -136,25 +151,40 @@ function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: React
   );
 }
 
-function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
+function BlockyGlitchImage({ images, alt }: { images: string[]; alt: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouse = useRef({ x: -1000, y: -1000 });
   const isHovering = useRef(false);
   
   const pristineCanvas = useRef<HTMLCanvasElement | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-next interval
+  useEffect(() => {
+    if (!images || images.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000); // Change image every 3 seconds
+    
+    return () => clearInterval(interval);
+  }, [images]);
 
   useEffect(() => {
+    if (!images || images.length === 0) return;
+
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d", { willReadFrequently: true });
+    
+    let animationId: number;
+    let isRunning = true; // Flag to prevent memory leaks or dead loops
+
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.src = src;
-
-    let animationId: number;
 
     const draw = () => {
-      if (!canvas || !ctx || !containerRef.current) return;
+      if (!isRunning || !canvas || !ctx || !containerRef.current) return;
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
       
@@ -206,7 +236,7 @@ function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
         const my = mouse.current.y;
         
         const blockSize = 3; 
-        const radius = 150; // Smaller radius for mobile friendliness
+        const radius = 150; 
         const maxPush = 70; 
 
         const startX = Math.max(0, mx - radius);
@@ -245,14 +275,26 @@ function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
       animationId = requestAnimationFrame(draw);
     };
 
-    img.onload = () => draw();
-    return () => cancelAnimationFrame(animationId);
-  }, [src]);
+    // Bind onload FIRST to guarantee it fires even if the image is in browser cache
+    img.onload = () => {
+      pristineCanvas.current = null;
+      if (isRunning) {
+        draw();
+      }
+    };
+    
+    // Assign src LAST
+    img.src = images[currentIndex];
+    
+    return () => {
+      isRunning = false; // Kill the old loop when the index changes
+      cancelAnimationFrame(animationId);
+    };
+  }, [images, currentIndex]);
 
   return (
     <motion.div 
       ref={containerRef} 
-      key={src}
       initial={{ opacity: 0, scale: 1.05 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -274,7 +316,17 @@ function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
       onMouseEnter={() => (isHovering.current = true)}
       onMouseLeave={() => (isHovering.current = false)}
     >
-      <canvas ref={canvasRef} className="w-full h-full block cursor-pointer" />
+      <canvas ref={canvasRef} className="w-full h-full block cursor-pointer transition-opacity duration-300" />
+      
+      {/* Optional: Add a simple progress indicator for the images */}
+      <div className="absolute bottom-4 left-4 flex gap-1.5 z-10">
+        {images.map((_, idx) => (
+          <div 
+            key={idx} 
+            className={`h-1 transition-all duration-300 ${idx === currentIndex ? 'w-4 bg-white' : 'w-2 bg-white/30'}`}
+          />
+        ))}
+      </div>
     </motion.div>
   );
 }
@@ -340,7 +392,9 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
 
           {/* Right Column (Dynamic Glitch Image) */}
           <div className="w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-auto relative overflow-hidden bg-black border-l border-white/10 mt-4 lg:mt-0">
-            <BlockyGlitchImage src={activeData.image} alt={activeData.title} />
+            <AnimatePresence mode="wait">
+              <BlockyGlitchImage key={activeData.id} images={activeData.images} alt={activeData.title} />
+            </AnimatePresence>
           </div>
 
         </div>
