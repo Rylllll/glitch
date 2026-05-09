@@ -28,29 +28,37 @@ export const WORKS = [
     date: "2026",
     image: "/images/museum/bg.png",
     images: [
-      "https://images.unsplash.com/photo-1773332598414-44a45e364d85?q=80&w=687&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=3174&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1561758033-d89a9ad46330?q=80&w=3174&auto=format&fit=crop"
+      "/images/museum/gallery.png",
+      "/images/museum/homepage.png",
+      "/images/museum/menu.png",
+      "/images/museum/painting.png",
+      "/images/museum/photography.png",
+      "/images/museum/sculpture.png",
+      "/images/museum/saved.png",
+      "/images/museum/overlay.png",
+      "/images/museum/overview.png",
     ],
     description: "OUR COLLECTION EMBODIES A DELICATE BALANCE OF HISTORICAL DEPTH AND INNOVATIVE EXPRESSION, CREATING AN IMMERSIVE EXPERIENCE OF TIMELESS ELEGANCE AND INTELLECTUAL ALLURE.",
     techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Figma", "Museum API"],
     link: "https://curators-archive.rynath.dev/"
   },
   {
-    slug: "Botanic archive",
-    title: "ECHO/CHAMBER",
-    client: "SONY",
-    type: "MUSIC VIDEO",
-    date: "2025",
-    image: "https://plus.unsplash.com/premium_photo-1773954455018-901a7a9f13bc?q=80&w=1174&auto=format&fit=crop",
+    slug: "floral-lexicon",
+    title: "floral lexicon",
+    client: "Personal Project",
+    type: "Information website",
+    date: "2026",
+    image: "/images/flower/bg.png",
     images: [
-      "https://plus.unsplash.com/premium_photo-1773954455018-901a7a9f13bc?q=80&w=1174&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=3174&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=3128&auto=format&fit=crop"
+      "/images/flower/exhibition.png",
+      "/images/flower/encyclopedia.png",
+      "/images/flower/overview.png",
+      "/images/flower/overview2.png",
+      "/images/flower/overview3.png",
     ],
-    description: "A generative audio-visual web experience acting as the companion piece for Sony's new artist launch. Real-time audio frequency data drives the distortion and displacement of 3D objects directly in the browser.",
-    techStack: ["Web Audio API", "WebGL", "GSAP", "React Fiber"],
-    link: "https://pokemon-ph.rynath.dev/"
+    description: "A digital flower encyclopedia wrapped in an elegant and minimal aesthetic. It presents itself as a living archive of flowers, where visitors can browse and search through thousands of blooms while exploring their meanings, symbolism, histories, classifications, and growing details.",
+    techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Figma"],
+    link: "https://flower-archive.rynath.dev/"
   },
   {
     slug: "sunflower",
@@ -108,7 +116,7 @@ export const TECH_STACK = [
     label: "FRONTEND",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" />
       </svg>
     ),
     items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
@@ -118,7 +126,7 @@ export const TECH_STACK = [
     label: "CREATIVE DEV",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
       </svg>
     ),
     items: ["Three.js / WebGL", "GSAP / Motion", "Canvas API", "Shaders (GLSL)"],
@@ -128,7 +136,7 @@ export const TECH_STACK = [
     label: "BACKEND",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+        <ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" /><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
       </svg>
     ),
     items: ["Node.js", "PostgreSQL", "Supabase", "REST & GraphQL"],
@@ -138,7 +146,7 @@ export const TECH_STACK = [
     label: "DESIGN / TOOLS",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/>
+        <path d="M12 19l7-7 3 3-7 7-3-3z" /><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" /><path d="M2 2l7.586 7.586" /><circle cx="11" cy="11" r="2" />
       </svg>
     ),
     items: ["Figma", "Adobe Creative Suite", "Git / Vercel", "Cursor / AI Workflows"],
