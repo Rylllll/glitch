@@ -259,7 +259,7 @@ function MainLayout() {
                 onClick={(e) => scrollToSection(e, "#contact")}
                 className={`font-mono px-4 py-2 transition-colors flex items-center gap-2 ${activeHash === "#contact" ? "bg-white text-black" : "bg-[#222222] hover:bg-[#333333] text-white"}`}
               >
-                &gt; CONTACT US
+                &gt; CONTACT ME
               </a>
             </div>
           </motion.div>

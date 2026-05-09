@@ -2,12 +2,27 @@ import { ReactNode, useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "motion/react";
 import { AsciiPortrait } from "./ascii-portrait";
 
-// Map your data items to official SimpleIcons slugs
+// Updated with Express.js
 const TECH_IMAGES = [
-  "react", "nextdotjs", "typescript", "tailwindcss", "framer",
-  "threedotjs", "webgl", "greensock", "html5", "opengl",
-  "nodedotjs", "postgresql", "supabase", "graphql",
-  "figma", "git", "vercel"
+  { slug: "react", name: "React" },
+  { slug: "nextdotjs", name: "Next.js" },
+  { slug: "typescript", name: "TypeScript" },
+  { slug: "tailwindcss", name: "Tailwind CSS" },
+  { slug: "framer", name: "Framer Motion" },
+  { slug: "threedotjs", name: "Three.js" },
+  { slug: "webgl", name: "WebGL" },
+  { slug: "greensock", name: "GSAP" },
+  { slug: "html5", name: "HTML5" },
+  { slug: "opengl", name: "OpenGL" },
+  { slug: "nodedotjs", name: "Node.js" },
+  { slug: "express", name: "Express.js" }, // <-- Added here
+  { slug: "postgresql", name: "PostgreSQL" },
+  { slug: "mongodb", name: "MongoDB" },
+  { slug: "supabase", name: "Supabase" },
+  { slug: "graphql", name: "GraphQL" },
+  { slug: "figma", name: "Figma" },
+  { slug: "git", name: "Git" },
+  { slug: "vercel", name: "Vercel" }
 ];
 
 // --- OUTSIDE THE SCREEN DATA ---
@@ -562,13 +577,16 @@ export function AboutSection() {
             style={{ x: techRow1X }} 
             className="flex items-center gap-10 md:gap-24 opacity-80"
           >
-            {topImages.map((iconSlug, i) => (
-              <div key={`top-${iconSlug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0">
+            {topImages.map((tech, i) => (
+              <div key={`top-${tech.slug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0 relative flex justify-center">
                 <img
-                  src={`https://cdn.simpleicons.org/${iconSlug}/white`}
-                  alt={`${iconSlug} icon`}
-                  className="w-full h-full object-contain opacity-30 hover:opacity-100 hover:scale-110 transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+                  src={`https://cdn.simpleicons.org/${tech.slug}/white`}
+                  alt={`${tech.name} icon`}
+                  className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
                 />
+                <div className="absolute -top-8 md:-top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[8px] md:text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
+                  {tech.name}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -578,13 +596,16 @@ export function AboutSection() {
             style={{ x: techRow2X }} 
             className="flex items-center gap-10 md:gap-24 opacity-80"
           >
-            {bottomImages.map((iconSlug, i) => (
-              <div key={`bottom-${iconSlug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0">
+            {bottomImages.map((tech, i) => (
+              <div key={`bottom-${tech.slug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0 relative flex justify-center">
                 <img
-                  src={`https://cdn.simpleicons.org/${iconSlug}/white`}
-                  alt={`${iconSlug} icon`}
-                  className="w-full h-full object-contain opacity-30 hover:opacity-100 hover:scale-110 transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+                  src={`https://cdn.simpleicons.org/${tech.slug}/white`}
+                  alt={`${tech.name} icon`}
+                  className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
                 />
+                <div className="absolute -top-8 md:-top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[8px] md:text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
+                  {tech.name}
+                </div>
               </div>
             ))}
           </motion.div>

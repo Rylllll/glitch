@@ -52,7 +52,6 @@ export const PERSONAL_PROJECTS = [
     images: [
       "/images/pokemon/pokedex.png",
       "/images/pokemon/overview.png",
-      "/images/pokemon/capture.png",
       "/images/pokemon/pokedata.png",
       "/images/pokemon/tcg.png",
       "/images/pokemon/pc.png",
