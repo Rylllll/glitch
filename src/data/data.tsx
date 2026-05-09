@@ -7,9 +7,14 @@ export const WORKS = [
     date: "2026",
     image: "/images/pokemon/homepage.png",
     images: [
-      "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=3174&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=3174&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=3175&auto=format&fit=crop"
+      "/images/pokemon/pokedex.png",
+      "/images/pokemon/overview.png",
+      "/images/pokemon/capture.png",
+      "/images/pokemon/pokedata.png",
+      "/images/pokemon/tcg.png",
+      "/images/pokemon/pc.png",
+      "/images/pokemon/capture.png",
+      "/images/pokemon/card.png",
     ],
     description: "PokéWeb OS is a modernized, terminal-based interface designed to compile the world's Pokemon data into one fluid, accessible mainframe.",
     techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Poke Api", "TCG Api", "Mongo DB"],
@@ -27,8 +32,8 @@ export const WORKS = [
       "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=3174&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1561758033-d89a9ad46330?q=80&w=3174&auto=format&fit=crop"
     ],
-    description: "An interactive, gamified ordering experience conceptualized for McDonald's. KÄSY redefines the kiosk interface by introducing micro-interactions, custom shaders, and an ultra-responsive layout tailored for Gen-Z consumers.",
-    techStack: ["React", "GLSL Shaders", "Zustand", "Figma"],
+    description: "OUR COLLECTION EMBODIES A DELICATE BALANCE OF HISTORICAL DEPTH AND INNOVATIVE EXPRESSION, CREATING AN IMMERSIVE EXPERIENCE OF TIMELESS ELEGANCE AND INTELLECTUAL ALLURE.",
+    techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Figma", "Museum API"],
     link: "https://curators-archive.rynath.dev/"
   },
   {

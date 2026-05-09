@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 export function AsciiPortrait() {
-  const rawMap = [
+ const rawMap = [
                                                                                                      
 "                                                   ###                                   ",           
 "                                                   #####                                  ",           
@@ -149,14 +149,21 @@ export function AsciiPortrait() {
     return () => clearTimeout(raf);
   }, []);
 
-  const onMove = (e: React.MouseEvent) => {
+  const handleInteraction = (clientX: number, clientY: number) => {
     const el = containerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
+    const px = (clientX - rect.left) / rect.width;
+    const py = (clientY - rect.top) / rect.height;
     cursorTargetRef.current = { x: px * cols, y: py * rows, intensity: 1 };
-  };
+  }
+
+  const onMove = (e: React.MouseEvent) => handleInteraction(e.clientX, e.clientY);
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      handleInteraction(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }
   
   const onLeave = () => {
     cursorTargetRef.current.intensity = 0;  
@@ -166,12 +173,15 @@ export function AsciiPortrait() {
     <div
       ref={containerRef}
       onMouseMove={onMove}
+      onTouchMove={onTouchMove}
       onMouseLeave={onLeave}
+      onTouchEnd={onLeave}
       className="w-full h-full flex flex-col items-center justify-center cursor-crosshair relative group"
     >
       <div className="absolute inset-0 -inset-x-12 -inset-y-12 z-0"></div>
       
-      <pre className="relative z-10 font-mono text-[7px] leading-[7px] md:text-[9px] md:leading-[9px] text-white select-none whitespace-pre text-center tracking-tighter transition-all duration-300 opacity-90 mix-blend-screen">
+      {/* Mobile-first text sizing logic ensures the ASCII art scales perfectly */}
+      <pre className="relative z-10 font-mono text-[9px] leading-[9px] text-white select-none whitespace-pre text-center tracking-tighter transition-all duration-300 opacity-90 mix-blend-screen">
         {grid.map((row, i) => (
           <div key={i}>{row.join("")}</div>
         ))}

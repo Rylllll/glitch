@@ -47,7 +47,6 @@ const OUTSIDE_DATA = [
   }
 ];
 
-// Upgraded Reveal
 export function Reveal({ children, delay = 0, y = 40 }: { children: ReactNode; delay?: number; y?: number }) {
   return (
     <motion.div
@@ -61,7 +60,6 @@ export function Reveal({ children, delay = 0, y = 40 }: { children: ReactNode; d
   );
 }
 
-// Line Draw Animation for Dividers
 function DrawLine({ delay = 0 }: { delay?: number }) {
   return (
     <motion.div
@@ -74,7 +72,6 @@ function DrawLine({ delay = 0 }: { delay?: number }) {
   );
 }
 
-// Snapping + Fast Blink Reveal for Titles
 export function SnapTitle({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return (
     <span className="overflow-hidden inline-block align-bottom py-1 -my-1">
@@ -82,12 +79,12 @@ export function SnapTitle({ children, delay = 0 }: { children: ReactNode; delay?
         initial={{ y: "100%", opacity: 0 }}
         whileInView={{
           y: "0%",
-          opacity: [0, 1, 0, 1, 1], // Rapid blink on reveal
+          opacity: [0, 1, 0, 1, 1],
         }}
         viewport={{ once: true, margin: "-10%" }}
         transition={{
-          y: { duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }, // Hard snap up
-          opacity: { duration: 0.4, delay, times: [0, 0.1, 0.2, 0.3, 1] } // Fast sequence
+          y: { duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] },
+          opacity: { duration: 0.4, delay, times: [0, 0.1, 0.2, 0.3, 1] }
         }}
         className="inline-block"
       >
@@ -97,14 +94,13 @@ export function SnapTitle({ children, delay = 0 }: { children: ReactNode; delay?
   );
 }
 
-// Brutalist Table Row (For Professional Log)
 function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: ReactNode; col3: ReactNode; delay: number }) {
   return (
     <Reveal delay={delay} y={20}>
       <motion.div
         initial="initial"
         whileHover="hover"
-        className="relative flex flex-col md:flex-row md:items-center justify-between gap-4 py-10 border-b border-white/20 group overflow-hidden cursor-crosshair"
+        className="relative flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4 py-8 md:py-10 border-b border-white/20 group overflow-hidden cursor-crosshair"
       >
         <motion.div
           variants={{
@@ -115,8 +111,8 @@ function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: React
           className="absolute inset-0 bg-white/[0.03] origin-bottom pointer-events-none"
         />
 
-        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-12 relative z-10 w-full">
-          <div className="text-[11px] uppercase tracking-widest text-white/40 group-hover:text-white/70 w-[150px] shrink-0 transition-colors">
+        <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-12 relative z-10 w-full">
+          <div className="text-[10px] md:text-[11px] uppercase tracking-widest text-white/40 group-hover:text-white/70 w-[150px] shrink-0 transition-colors">
             {col1}
           </div>
           
@@ -126,13 +122,13 @@ function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: React
               hover: { x: 10 }
             }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="font-druk text-[24px] md:text-[32px] lg:text-[40px] tracking-wide text-white/90 group-hover:text-white leading-[1] uppercase w-full"
+            className="font-druk text-[20px] sm:text-[24px] md:text-[32px] lg:text-[40px] tracking-wide text-white/90 group-hover:text-white leading-[1.1] md:leading-[1] uppercase w-full"
           >
             {col2}
           </motion.div>
         </div>
 
-        <div className="text-[11px] uppercase tracking-widest text-white/50 md:text-right group-hover:text-white/90 relative z-10 shrink-0 mt-4 md:mt-0 transition-colors">
+        <div className="text-[10px] md:text-[11px] uppercase tracking-widest text-white/50 text-left md:text-right group-hover:text-white/90 relative z-10 shrink-0 mt-2 md:mt-0 transition-colors">
           {col3}
         </div>
       </motion.div>
@@ -140,14 +136,12 @@ function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: React
   );
 }
 
-// NEW: Hardware Accelerated Mouse Block Glitch Image (Smooth Pushing Effect)
 function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouse = useRef({ x: -1000, y: -1000 });
   const isHovering = useRef(false);
   
-  // We use an offscreen pristine canvas so we sample from the un-distorted image
   const pristineCanvas = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -183,7 +177,6 @@ function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
         pCanvas.width = width;
         pCanvas.height = height;
         
-        // Calculate Object-cover dimensions
         const imgRatio = img.width / img.height;
         const canvasRatio = width / height;
         let drawW = width;
@@ -203,21 +196,18 @@ function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
         pCtx.drawImage(img, drawX, drawY, drawW, drawH);
       }
 
-      // 1. Draw the clean baseline image every frame
       ctx.clearRect(0, 0, width, height);
       if (pCanvas) {
         ctx.drawImage(pCanvas, 0, 0);
       }
 
-      // 2. Apply the smooth, tiny-pixel pushing distortion
       if (isHovering.current && pCanvas) {
         const mx = mouse.current.x;
         const my = mouse.current.y;
         
-        // Settings for the "push"
-        const blockSize = 3;  // Smaller pixels for finer glitch
-        const radius = 220;   // Area of effect
-        const maxPush = 90;   // Maximum pixel displacement
+        const blockSize = 3; 
+        const radius = 150; // Smaller radius for mobile friendliness
+        const maxPush = 70; 
 
         const startX = Math.max(0, mx - radius);
         const startY = Math.max(0, my - radius);
@@ -228,21 +218,17 @@ function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
           for (let x = startX; x < endX; x += blockSize) {
             const dx = mx - x;
             const dy = my - y;
-            const dist = Math.hypot(dx, dy) || 1; // Prevent div by zero
+            const dist = Math.hypot(dx, dy) || 1; 
             
             if (dist < radius) {
-              // Create a smooth easing curve for the "push" effect
               const force = Math.pow(1 - dist / radius, 1.8); 
               
-              // Shift coordinates to sample pixels closer to cursor, pushing them outward (+)
               let srcX = x + (dx / dist) * force * maxPush;
               let srcY = y + (dy / dist) * force * maxPush;
               
-              // Snap source coordinates to the block grid to keep it distinctly pixelated
               srcX = Math.floor(srcX / blockSize) * blockSize;
               srcY = Math.floor(srcY / blockSize) * blockSize;
 
-              // Occasional horizontal glitch tear
               if (Math.random() > 0.88) {
                 srcX += (Math.random() > 0.5 ? 1 : -1) * blockSize;
               }
@@ -277,15 +263,22 @@ function BlockyGlitchImage({ src, alt }: { src: string; alt: string }) {
           mouse.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
         }
       }}
+      onTouchMove={(e) => {
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (rect && e.touches[0]) {
+          mouse.current = { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+          isHovering.current = true;
+        }
+      }}
+      onTouchEnd={() => (isHovering.current = false)}
       onMouseEnter={() => (isHovering.current = true)}
       onMouseLeave={() => (isHovering.current = false)}
     >
-      <canvas ref={canvasRef} className="w-full h-full block cursor-crosshair" />
+      <canvas ref={canvasRef} className="w-full h-full block cursor-pointer" />
     </motion.div>
   );
 }
 
-// Exact Replica Interactive Layout for "Outside the Screen"
 function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeData = OUTSIDE_DATA[activeIndex];
@@ -294,25 +287,24 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
     <Reveal delay={delay} y={20}>
       <div className="relative w-full mt-8">
         {/* Massive Header embedded in the grid layout */}
-        <div className="w-full pt-12 pb-6 border-b flex flex-wrap gap-x-4">
-          <h2 className="font-druk text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
+        <div className="w-full pt-8 md:pt-12 pb-4 md:pb-6 border-b flex flex-wrap gap-x-2 md:gap-x-4">
+          <h2 className="font-druk text-[10vw] md:text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
             <SnapTitle delay={0.1}>OUTSIDE</SnapTitle>
           </h2>
-          <h2 className="font-druk text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
+          <h2 className="font-druk text-[10vw] md:text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
             <SnapTitle delay={0.3}>THE</SnapTitle>
           </h2>
-          <h2 className="font-druk text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
+          <h2 className="font-druk text-[10vw] md:text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
             <SnapTitle delay={0.5}>SCREEN.</SnapTitle>
           </h2>
         </div>
 
         {/* Split Container */}
-        <div className="flex flex-col lg:flex-row w-full h-auto min-h-[500px] gap-4 mt-4">
+        <div className="flex flex-col lg:flex-row w-full h-auto min-h-[400px] md:min-h-[500px] gap-4 mt-4">
           
           {/* Left Column (Menu & Details) */}
           <div className="w-full lg:w-1/2 flex flex-col">
-            {/* Interactive Categories */}
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-start gap-2 md:gap-0">
               {OUTSIDE_DATA.map((item, idx) => {
                 const isActive = activeIndex === idx;
                 return (
@@ -320,10 +312,10 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
                     key={item.id}
                     onMouseEnter={() => setActiveIndex(idx)}
                     onClick={() => setActiveIndex(idx)}
-                    className={`cursor-pointer w-full font-druk uppercase font-extrabold text-[2rem] sm:text-[28px] md:text-[1.2rem] tracking-wide ${
+                    className={`cursor-pointer w-full font-druk uppercase font-extrabold text-[1.5rem] sm:text-[2rem] md:text-[28px] lg:text-[1.2rem] tracking-wide transition-all ${
                       isActive 
-                        ? "bg-white text-black px-3 py-0.5" 
-                        : "text-white/40 hover:text-white/70 px-3 py-0.5"
+                        ? "bg-white text-black px-3 py-1 md:py-0.5" 
+                        : "text-white/40 hover:text-white/70 px-3 py-1 md:py-0.5"
                     }`}
                   >
                     {item.title}
@@ -332,8 +324,7 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
               })}
             </div>
 
-            {/* Bottom Bulleted Details */}
-            <div className="mt-auto pt-16 flex flex-col gap-2 font-mono text-[10px] md:text-[11px] tracking-widest text-white/70 uppercase font-bold mb-6 lg:mb-0">
+            <div className="mt-8 md:mt-auto pt-4 md:pt-16 flex flex-col gap-2 font-mono text-[9px] md:text-[11px] tracking-widest text-white/70 uppercase font-bold mb-6 lg:mb-0">
               {activeData.details.map((detail, i) => (
                 <motion.div 
                   key={`${activeIndex}-${i}`}
@@ -348,7 +339,7 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
           </div>
 
           {/* Right Column (Dynamic Glitch Image) */}
-          <div className="w-full lg:w-1/2 h-[400px] lg:h-auto relative overflow-hidden bg-black border-l border-white/10">
+          <div className="w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-auto relative overflow-hidden bg-black border-l border-white/10 mt-4 lg:mt-0">
             <BlockyGlitchImage src={activeData.image} alt={activeData.title} />
           </div>
 
@@ -361,7 +352,6 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
 export function AboutSection() {
   const containerRef = useRef<HTMLElement>(null);
   
-  // Smooth Scroll Progress
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
@@ -369,71 +359,68 @@ export function AboutSection() {
 
   const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
 
-  // Parallax & Marquee Values
-  const gridY = useTransform(smoothProgress, [0, 1], ["0%", "20%"]);
   const portraitY = useTransform(smoothProgress, [0, 1], ["-10%", "10%"]);
   const logSectionY = useTransform(smoothProgress, [0, 1], ["10%", "-5%"]);
   
-  // Tech Stack Opposite Scroll Movement
   const techRow1X = useTransform(smoothProgress, [0, 1], ["0%", "-30%"]);
   const techRow2X = useTransform(smoothProgress, [0, 1], ["-30%", "0%"]);
 
-  // Split images into two rows for the marquee
   const halfLength = Math.ceil(TECH_IMAGES.length / 2);
   const topImages = [...TECH_IMAGES.slice(0, halfLength), ...TECH_IMAGES.slice(0, halfLength)];
   const bottomImages = [...TECH_IMAGES.slice(halfLength), ...TECH_IMAGES.slice(halfLength)];
 
   return (
-    <section ref={containerRef} id="about" className="relative z-10 px-6 py-24 bg-[#050505] min-h-screen overflow-hidden">
+    <section ref={containerRef} id="about" className="relative z-10 px-4 md:px-6 py-16 md:py-24 bg-[#050505] min-h-screen overflow-hidden">
 
       {/* HEADER BAR */}
       <Reveal>
-        <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-white/50 pb-4 relative z-10">
+        <div className="flex justify-between items-center text-[9px] md:text-[10px] uppercase tracking-widest text-white/50 pb-4 relative z-10">
           <span>ABOUT</span>
-          <span>IDENTITY // 01</span>
+          <span className="hidden sm:inline">IDENTITY // 01</span>
           <span>SYS.QUERY</span>
         </div>
         <DrawLine delay={0.2} />
       </Reveal>
 
-      {/* MASSIVE TYPOGRAPHY HERO (Now with Snapping Reveal) */}
-      <div className="py-16 md:py-24 relative z-10 w-full flex flex-col font-druk uppercase leading-[0.85] tracking-tight text-[12vw] md:text-[10vw]">
-        <div className="flex justify-between items-start w-full">
+      {/* MASSIVE TYPOGRAPHY HERO */}
+      <div className="py-12 md:py-24 relative z-10 w-full flex flex-col font-druk uppercase leading-[0.85] tracking-tight text-[15vw] md:text-[10vw]">
+        <div className="flex flex-col md:flex-row justify-between items-start w-full text-[2rem] md:text-[10rem]">
           <SnapTitle delay={0.1}>A</SnapTitle>
-          <SnapTitle delay={0.3}><span className="text-right">CREATIVE</span></SnapTitle>
+          <SnapTitle delay={0.3}><span className="text-left md:text-right">CREATIVE</span></SnapTitle>
         </div>
-        <div className="w-full text-center md:text-left mt-2 md:mt-0">
+        <div className="w-full text-left mt-2 md:mt-0 text-[2rem] md:text-[10rem]">
           <SnapTitle delay={0.5}>ENGINEER</SnapTitle>
         </div>
-        <div className="w-full text-right mt-2 md:mt-0 text-white/80">
+        <div className="w-full text-left md:text-right mt-2 md:mt-0 text-white/80 text-[2rem] md:text-[10rem]">
           <SnapTitle delay={0.7}>ARCHITECT</SnapTitle>
         </div>
       </div>
 
-      <div className="w-full relative z-10 mb-16 lg:mb-24">
+      <div className="w-full relative z-10 mb-12 lg:mb-24">
         <DrawLine />
       </div>
 
       {/* MASSIVE ASCII GRID & SPLIT BIO STATEMENT */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-12 lg:gap-8 items-center relative z-10 mb-32 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-12 lg:gap-8 items-center relative z-10 mb-20 md:mb-32 w-full">
         
         {/* Left: Bold Statement */}
         <div className="flex flex-col justify-center order-2 lg:order-1 ">
-          <h3 className="text-3xl md:text-4xl xl:text-5xl uppercase font-druk tracking-wide leading-[1.1] text-white/90">
+          <h3 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl uppercase font-druk tracking-wide leading-[1.1] text-white/90">
             <SnapTitle delay={0.4}>I DESIGN.</SnapTitle> <br className="hidden lg:block"/>
             <SnapTitle delay={0.5}>I CODE.</SnapTitle> <br className="hidden lg:block"/>
             <SnapTitle delay={0.6}>I DEPLOY.</SnapTitle>
           </h3>
           <Reveal delay={0.8}>
-            <p className="mt-6 text-[11px] leading-relaxed text-white/60 uppercase tracking-widest border-l border-white/20 pl-4">
+            <p className="mt-4 md:mt-6 text-[10px] md:text-[11px] leading-relaxed text-white/60 uppercase tracking-widest border-l border-white/20 pl-4">
               Web platforms & digital experiences made from passion. Working at the intersection of logic and aesthetics.
             </p>
           </Reveal>
         </div>
 
         {/* Middle: MASSIVE ASCII Portrait */}
-        <div className="w-full flex justify-center opacity-80 mix-blend-screen overflow-visible order-1 lg:order-2">
-          <motion.div style={{ y: portraitY }} className="w-full max-w-full lg:scale-125 xl:scale-150 transform origin-center">
+        <div className="w-full flex justify-center opacity-80 mix-blend-screen overflow-hidden sm:overflow-visible order-1 lg:order-2">
+          {/* Responsive Scaling applied to container */}
+          <motion.div style={{ y: portraitY }} className="w-full max-w-full scale-100 sm:scale-75 md:scale-100 lg:scale-125 xl:scale-150 transform origin-center">
             <Reveal delay={0.4}>
               <AsciiPortrait />
             </Reveal>
@@ -443,7 +430,7 @@ export function AboutSection() {
         {/* Right: Description & Download */}
         <div className="flex flex-col justify-center items-start lg:items-end text-left lg:text-right order-3">
           <Reveal delay={0.7}>
-            <p className="text-[12px] xl:text-[13px] leading-relaxed text-white/50 uppercase tracking-widest max-w-[280px]">
+            <p className="text-[11px] xl:text-[13px] leading-relaxed text-white/50 uppercase tracking-widest max-w-[280px]">
               Lead Front End Engineer specializing in high-performance, user-centered platforms and interactive 3D experiences.
             </p>
           </Reveal>
@@ -452,7 +439,7 @@ export function AboutSection() {
             <a
               href="/Reymark-Boquiron.pdf"
               download="Reymark_Boquiron_Resume.pdf"
-              className="inline-flex items-center justify-between gap-4 px-6 py-4 mt-12 border border-white/20 hover:bg-white text-white hover:text-black transition-all duration-300 text-[11px] uppercase tracking-widest font-bold w-full max-w-[240px] group"
+              className="inline-flex items-center justify-between gap-4 px-6 py-4 mt-8 md:mt-12 border border-white/20 hover:bg-white text-white hover:text-black transition-all duration-300 text-[10px] md:text-[11px] uppercase tracking-widest font-bold w-full max-w-[240px] group"
             >
               <span>Download Resume</span>
               <span className="group-hover:translate-y-1 transition-transform duration-300">↓</span>
@@ -462,9 +449,9 @@ export function AboutSection() {
       </div>
 
       {/* STRUCTURED DATA TABLE (Professional Experience) */}
-      <motion.div style={{ y: logSectionY }} className="relative z-10 w-full mt-24">
+      <motion.div style={{ y: logSectionY }} className="relative z-10 w-full mt-16 md:mt-24">
         <Reveal delay={0.2}>
-          <div className="text-[16px] md:text-[24px] font-druk uppercase tracking-widest text-white/50 pb-2 mb-4">
+          <div className="text-[14px] md:text-[24px] font-druk uppercase tracking-widest text-white/50 pb-2 mb-4">
             // PROFESSIONAL_LOG
           </div>
         </Reveal>
@@ -498,29 +485,29 @@ export function AboutSection() {
         </div>
       </motion.div>
 
-      {/* NEW INTERACTIVE LAYOUT (Replaces Personal Archives) */}
-      <motion.div style={{ y: logSectionY }} className="relative z-10 w-full mt-32">
+      {/* INTERACTIVE LAYOUT */}
+      <motion.div style={{ y: logSectionY }} className="relative z-10 w-full mt-20 md:mt-32">
         <OutsideScreenInteractive delay={0.3} />
       </motion.div>
 
       {/* SCROLL-DRIVEN TECH STACK MARQUEE */}
-      <div className="mt-40 relative z-20 pb-24 overflow-hidden">
+      <div className="mt-24 md:mt-40 relative z-20 pb-16 md:pb-24 overflow-hidden">
         <Reveal>
-          <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-white/50 pb-4 mb-12">
-            <span className="font-druk text-[16px] md:text-[24px]">TECH_STACK</span>
+          <div className="flex justify-between items-center text-[9px] md:text-[10px] uppercase tracking-widest text-white/50 pb-4 mb-8 md:mb-12">
+            <span className="font-druk text-[14px] md:text-[24px]">TECH_STACK</span>
             <span>IMG_RENDER_ONLY</span>
           </div>
           <DrawLine delay={0.1} />
         </Reveal>
 
-        <div className="mt-20 flex flex-col gap-12 w-[200vw] -ml-[50vw]">
-          {/* Top Marquee: Scrolls Left */}
+        <div className="mt-12 md:mt-20 flex flex-col gap-8 md:gap-12 w-[200vw] -ml-[50vw]">
+          {/* Top Marquee */}
           <motion.div 
             style={{ x: techRow1X }} 
-            className="flex items-center gap-16 md:gap-24 opacity-80"
+            className="flex items-center gap-10 md:gap-24 opacity-80"
           >
             {topImages.map((iconSlug, i) => (
-              <div key={`top-${iconSlug}-${i}`} className="w-16 h-16 md:w-24 md:h-24 group shrink-0">
+              <div key={`top-${iconSlug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0">
                 <img
                   src={`https://cdn.simpleicons.org/${iconSlug}/white`}
                   alt={`${iconSlug} icon`}
@@ -530,13 +517,13 @@ export function AboutSection() {
             ))}
           </motion.div>
 
-          {/* Bottom Marquee: Scrolls Right */}
+          {/* Bottom Marquee */}
           <motion.div 
             style={{ x: techRow2X }} 
-            className="flex items-center gap-16 md:gap-24 opacity-80"
+            className="flex items-center gap-10 md:gap-24 opacity-80"
           >
             {bottomImages.map((iconSlug, i) => (
-              <div key={`bottom-${iconSlug}-${i}`} className="w-16 h-16 md:w-24 md:h-24 group shrink-0">
+              <div key={`bottom-${iconSlug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0">
                 <img
                   src={`https://cdn.simpleicons.org/${iconSlug}/white`}
                   alt={`${iconSlug} icon`}

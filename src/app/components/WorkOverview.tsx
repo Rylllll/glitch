@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { GlitchText } from "./glitch-text";
 import { WORKS, TECH_STACK } from "../../data/data";
 
-// Upgraded to true 3D Spherical Coordinates (rotateY for longitude, rotateX for latitude)
 const SPHERE_POSITIONS = [
   { rotY: 0, rotX: 0 },
   { rotY: 55, rotX: 15 },
@@ -15,7 +14,6 @@ const SPHERE_POSITIONS = [
   { rotY: -90, rotX: 30 },
 ];
 
-// --- TYPING & RANDOMIZING SYMBOLS EFFECT ---
 function TypewriterText({ text, delay = 0, speed = 30 }: { text: string, delay?: number, speed?: number }) {
   const [displayed, setDisplayed] = useState("");
 
@@ -64,23 +62,23 @@ export function WorkOverview() {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  // State for the hover fullscreen overlay (Thumbnails) now tracks src AND number
+  // --- SCROLL TO TOP FIX ---
+  // This ensures the page always starts at the very top when opened.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+
   const [hoveredImage, setHoveredImage] = useState<{ src: string, id: number } | null>(null);
-  
-  // State for the header dropdown and the spatial map
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hoveredWorkSlug, setHoveredWorkSlug] = useState<string | null>(null);
 
-  // Find the specific work based on the URL slug
   const work = WORKS.find((w) => w.slug === slug);
 
-  // Helper to find the 3D angles for the spatial sphere animation
   const activeHoverIndex = WORKS.findIndex((w) => w.slug === hoveredWorkSlug);
   const mapOffset = activeHoverIndex !== -1 
     ? SPHERE_POSITIONS[activeHoverIndex % SPHERE_POSITIONS.length] 
     : { rotY: 0, rotX: 0 };
 
-  // If someone goes to a URL that doesn't exist, show a simple fallback
   if (!work) {
     return (
       <div className="h-screen w-full bg-black text-white flex items-center justify-center font-tronica text-sm uppercase tracking-widest">
@@ -90,7 +88,7 @@ export function WorkOverview() {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-black overflow-hidden font-tronica text-white">
+    <div className="relative min-h-screen w-full bg-black overflow-x-hidden font-tronica text-white">
       
       {/* 1. THUMBNAIL FULLSCREEN HOVER OVERLAY */}
       <AnimatePresence>
@@ -100,17 +98,18 @@ export function WorkOverview() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[120] pointer-events-none bg-black/80 flex flex-col items-center justify-center"
+            onClick={() => setHoveredImage(null)} // Close on tap for mobile
+            // FIX: Added md:pointer-events-none so the overlay doesn't steal the hover state on desktop
+            className="fixed inset-0 z-[120] pointer-events-auto md:pointer-events-none bg-black/90 flex flex-col items-center justify-center cursor-pointer md:cursor-auto"
           >
-            <div className="relative">
-              {/* Number overlay on the thumbnail image */}
+            <div className="relative max-w-[90vw] max-h-[80vh]">
               <div className="absolute -top-8 left-0 text-white/50 text-[10px] md:text-xs tracking-widest">
                 FRAME / 0{hoveredImage.id}
               </div>
               <img
                 src={hoveredImage.src}
                 alt="Fullscreen Hover Overlay"
-                className="w-96 h-96 object-contain opacity-90"
+                className="w-full h-full object-contain opacity-100"
               />
             </div>
           </motion.div>
@@ -126,9 +125,8 @@ export function WorkOverview() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
             className="fixed inset-0 z-40 bg-[#050505] overflow-hidden pointer-events-none flex items-center justify-center"
-            style={{ perspective: "1200px" }} // Adds 3D depth to the viewport
+            style={{ perspective: "1200px" }} 
           >
-            {/* CRT Grid Background */}
             <div 
               className="absolute inset-0 opacity-40"
               style={{
@@ -137,32 +135,31 @@ export function WorkOverview() {
               }}
             />
             
-            {/* 3D Pivot Container (Rotates the entire sphere) */}
+            {/* Dynamic Z-translation for smaller mobile screens so the sphere doesn't clip */}
             <motion.div
               className="absolute w-full h-full flex items-center justify-center"
               style={{ transformStyle: "preserve-3d" }}
               animate={{ 
                 rotateX: mapOffset.rotX ? -mapOffset.rotX : 0, 
                 rotateY: mapOffset.rotY ? -mapOffset.rotY : 0,
-                z: -900 // Pushes the pivot back so items ride on the surface of the sphere
+                z: window.innerWidth < 768 ? -500 : -900 
               }}
               transition={{ type: "spring", damping: 28, stiffness: 60 }}
             >
               {WORKS.map((w, index) => {
                 const pos = SPHERE_POSITIONS[index % SPHERE_POSITIONS.length];
                 const isFocused = hoveredWorkSlug === w.slug;
+                const sphereRadius = window.innerWidth < 768 ? 500 : 900;
                 
                 return (
                   <div
                     key={w.slug}
                     className="absolute flex flex-col items-center justify-center"
                     style={{ 
-                      // Places the image on the edge of the 900px radius sphere
-                      transform: `rotateY(${pos.rotY}deg) rotateX(${pos.rotX}deg) translateZ(900px)`,
+                      transform: `rotateY(${pos.rotY}deg) rotateX(${pos.rotX}deg) translateZ(${sphereRadius}px)`,
                       transformStyle: "preserve-3d"
                     }}
                   >
-                    {/* Floating Number Top Left of Spatial Map Image */}
                     <motion.div
                       animate={{ opacity: isFocused ? 1 : 0.3 }}
                       className="absolute -top-6 left-0 text-[10px] md:text-xs text-white/60 tracking-widest"
@@ -174,7 +171,7 @@ export function WorkOverview() {
                     <motion.img 
                       src={w.image} 
                       alt={w.title} 
-                      className="w-[280px] md:w-[500px] h-auto object-cover shadow-2xl" 
+                      className="w-[60vw] md:w-[280px] lg:w-[500px] h-auto object-cover shadow-2xl" 
                       animate={{ 
                         scale: isFocused ? 1 : 0.6,
                         opacity: isFocused ? 1 : 0.2,
@@ -183,13 +180,12 @@ export function WorkOverview() {
                       transition={{ duration: 0.5 }}
                     />
                     
-                    {/* Floating Title for the focused item */}
                     {isFocused && (
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="absolute -bottom-16 text-[10px] md:text-xs tracking-widest uppercase bg-black/60 px-4 py-2 border border-white/20 backdrop-blur-sm"
-                        style={{ transform: "translateZ(50px)" }} // Pops the text off the image slightly
+                        className="absolute -bottom-12 md:-bottom-16 text-[8px] md:text-xs tracking-widest uppercase bg-black/60 px-4 py-2 border border-white/20 backdrop-blur-sm whitespace-nowrap"
+                        style={{ transform: "translateZ(50px)" }}
                       >
                         {w.title}
                       </motion.div>
@@ -202,25 +198,34 @@ export function WorkOverview() {
         )}
       </AnimatePresence>
 
-      {/* --- ROOT LEVEL HEADER & DROPDOWN (100% immune to z-index clipping) --- */}
-      <header className="flex justify-between items-start p-6 text-[10px] md:text-xs uppercase tracking-widest border-b border-white/10 fixed top-0 w-full z-[100] pointer-events-none mix-blend-difference">
+      {/* --- ROOT LEVEL HEADER & DROPDOWN --- */}
+      <header className="flex justify-between items-center p-4 md:p-6 text-[9px] md:text-[10px] lg:text-xs uppercase tracking-widest border-b border-white/10 fixed top-0 w-full z-[100] pointer-events-none mix-blend-difference bg-black/20 backdrop-blur-sm md:backdrop-blur-none md:bg-transparent">
         
-        {/* HOVER TRIGGER */}
+        {/* CLICK/HOVER TRIGGER */}
         <div 
           className="flex gap-2 items-center pointer-events-auto cursor-pointer"
+          onClick={() => {
+            setIsDropdownOpen(!isDropdownOpen);
+            setHoveredWorkSlug(isDropdownOpen ? null : (slug || null));
+          }}
           onMouseEnter={() => {
-            setIsDropdownOpen(true);
-            setHoveredWorkSlug(slug || null); 
+            if(window.innerWidth >= 768) {
+              setIsDropdownOpen(true);
+              setHoveredWorkSlug(slug || null);
+            }
           }}
           onMouseLeave={() => {
-            setIsDropdownOpen(false);
-            setHoveredWorkSlug(null);
+            if(window.innerWidth >= 768) {
+              setIsDropdownOpen(false);
+              setHoveredWorkSlug(null);
+            }
           }}
         >
           <span className="text-white/60">WORKS /</span>
-          <span className="bg-white text-black px-0.5 ">
+          <span className="bg-white text-black px-1 py-0.5">
             <TypewriterText text={work.title} speed={20} />
           </span>
+          <span className=" text-white ml-1">▼</span>
         </div>
 
         {/* WORK TITLE (Center) */}
@@ -231,23 +236,27 @@ export function WorkOverview() {
         {/* CLOSE BUTTON */}
         <button
           onClick={() => navigate('/')}
-          className="hover:text-white/60 transition-colors flex items-center gap-1 pointer-events-auto cursor-pointer mt-1"
+          className="hover:text-white/60 transition-colors flex text-sm items-center gap-1 pointer-events-auto cursor-pointer mt-1"
         >
           <GlitchText>close</GlitchText>
-          <span className="text-[14px]">↲</span>
+          <span className="text-[12px] md:text-[14px]">↲</span>
         </button>
       </header>
 
       {/* ROOT LEVEL DROPDOWN LIST */}
       <div 
-        className="fixed top-[52px] left-10 z-[100] uppercase tracking-widest pointer-events-auto"
+        className="fixed top-[48px] md:top-[52px] left-4 md:left-10 z-[100] uppercase tracking-widest pointer-events-auto"
         onMouseEnter={() => {
-          setIsDropdownOpen(true);
-          setHoveredWorkSlug(slug || null); 
+          if(window.innerWidth >= 768) {
+            setIsDropdownOpen(true);
+            setHoveredWorkSlug(slug || null);
+          }
         }}
         onMouseLeave={() => {
-          setIsDropdownOpen(false);
-          setHoveredWorkSlug(null);
+          if(window.innerWidth >= 768) {
+            setIsDropdownOpen(false);
+            setHoveredWorkSlug(null);
+          }
         }}
       >
         <AnimatePresence>
@@ -257,7 +266,7 @@ export function WorkOverview() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex flex-col overflow-hidden pl-[55px] pt-1 drop-shadow-lg" 
+              className="flex flex-col overflow-hidden pl-2 md:pl-[55px] pt-2 drop-shadow-lg bg-black/80 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none p-4 md:p-0 rounded-md md:rounded-none" 
             >
               {WORKS.map((w) => (
                 <span 
@@ -267,8 +276,8 @@ export function WorkOverview() {
                     navigate(`/work/${w.slug}`);
                     setIsDropdownOpen(false);
                   }}
-                  className={`text-[8px] md:text-[10px] py-1.5 transition-colors cursor-pointer hover:text-white ${
-                    w.slug === slug ? 'text-white font-bold bg-white/10 px-1' : 'text-white/50'
+                  className={`text-[9px] md:text-[10px] py-2 md:py-1.5 transition-colors cursor-pointer hover:text-white ${
+                    w.slug === slug ? 'text-white font-bold bg-white/20 md:bg-white/10 px-2 md:px-1' : 'text-white/50'
                   }`}
                 >
                   {w.title}
@@ -279,7 +288,7 @@ export function WorkOverview() {
         </AnimatePresence>
       </div>
 
-      {/* --- PAGE CONTENT (Rendered below overlays) --- */}
+      {/* --- PAGE CONTENT --- */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -287,87 +296,92 @@ export function WorkOverview() {
         className="relative z-10"
       >
         {/* FULLSCREEN HERO IMAGE */}
-        <div className="w-full h-screen relative bg-[#111] flex items-center justify-center">
+        <div className="w-full h-[60vh] md:h-screen relative bg-[#111] flex items-center justify-center mt-12 md:mt-0">
+          
           <img
             src={work.image}
             alt={work.title}
             className="absolute inset-0 w-full h-full object-cover opacity-90"
           />
           
-          {/* VISIT LINK BUTTON */}
           <a 
             href={work.link}
             target="_blank" 
             rel="noreferrer"
-            className="relative z-20 border border-white/30 bg-black/40 backdrop-blur-md px-8 py-4 text-[10px] uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-300 pointer-events-auto"
+            className="relative z-20 border border-white/30 bg-black/40 backdrop-blur-md px-6 py-3 md:px-8 md:py-4 text-[9px] md:text-[10px] uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-300 pointer-events-auto"
           >
             <GlitchText>VISIT LIVE PROJECT ↗</GlitchText>
           </a>
 
-          {/* Simple gradient at the bottom to ensure the transition to the text section is smooth */}
-          <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
+          <div className="absolute bottom-0 inset-x-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
+          <div className="absolute top-0 inset-x-0 h-24 md:h-32 bg-gradient-to-b from-black to-transparent pointer-events-none"></div>
         </div>
 
         {/* TWO-COLUMN DETAILS SECTION */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 p-8 md:p-12 pb-24 max-w-[1800px] mx-auto bg-black relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 p-6 md:p-12 pb-24 max-w-[1800px] mx-auto bg-black relative z-10">
 
           {/* LEFT COLUMN: Description */}
           <div className="flex flex-col">
-            <h1 className="text-4xl md:text-[2rem] font-black uppercase tracking-tighter mb-8 leading-none font-druk">
+            <h1 className="text-3xl md:text-4xl lg:text-[2rem] font-black uppercase tracking-tighter mb-6 md:mb-8 leading-none font-druk break-words">
               <TypewriterText text={work.title} delay={300} speed={40} />
             </h1>
 
-            <div className="grid grid-cols-2 gap-4 text-[10px] uppercase tracking-widest text-white/40 mb-8 border-b border-white/10 pb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 mb-6 md:mb-8 border-b border-white/10 pb-6">
               <div>TYPE <span className="text-white ml-2"><TypewriterText text={work.type || 'COMMERCIAL'} delay={500} /></span></div>
               <div>DATE <span className="text-white ml-2"><TypewriterText text={work.date || '2025'} delay={600} /></span></div>
             </div>
 
-            {/* DYNAMIC DESCRIPTION INJECTED HERE */}
-            <div className="text-[11px] leading-loose text-white/80 space-y-6 mb-16 max-w-lg uppercase tracking-wider">
+            <div className="text-[10px] md:text-[11px] leading-loose text-white/80 space-y-6 mb-12 lg:mb-16 max-w-lg uppercase tracking-wider">
               <p>{work.description}</p>
             </div>
 
-            {/* DYNAMIC TECH STACK & CLIENT INJECTED HERE */}
-            <div className="text-[10px] uppercase tracking-widest text-white/40 space-y-2 mt-auto">
-              <div>TECH STACK <span className="text-white/70 ml-2">{work.techStack?.join(" // ")}</span></div>
-              <div>CLIENT <span className="text-white/70 ml-2">{work.client}</span></div>
+            <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 space-y-3 mt-auto">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                <span className="shrink-0">TECH STACK:</span>
+                <span className="text-white/70">{work.techStack?.join(" // ")}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                <span className="shrink-0">CLIENT:</span>
+                <span className="text-white/70">{work.client}</span>
+              </div>
             </div>
           </div>
 
           {/* RIGHT COLUMN: Gallery & Navigation */}
           <div className="flex flex-col">
-            <h2 className="text-2xl md:text-xl font-black uppercase tracking-tighter mb-8 font-druk">
+            <h2 className="text-xl md:text-2xl lg:text-xl font-black uppercase tracking-tighter mb-6 md:mb-8 font-druk break-words">
               <TypewriterText text={`REYMARK.DEV: ${work.title}`} delay={400} speed={30} />
             </h2>
 
-            {/* MULTIPLE IMAGES DYNAMICALLY RENDERED HERE */}
-            <div className="grid grid-cols-4 md:grid-cols-7 gap-2 mb-16">
+            {/* Gallery Grid (Responsive Columns) */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-2 mb-12 md:mb-16">
               {work.images?.map((imgUrl, index) => {
                 const num = index + 1;
                 return (
                   <div
                     key={num}
-                    className="flex flex-col gap-2 group"
-                    onMouseEnter={() => setHoveredImage({ src: imgUrl, id: num })}
-                    onMouseLeave={() => setHoveredImage(null)}
+                    className="flex flex-col gap-2 group cursor-pointer relative"
+                    onClick={() => setHoveredImage({ src: imgUrl, id: num })}
+                    onMouseEnter={() => { if(window.innerWidth >= 768) setHoveredImage({ src: imgUrl, id: num }) }}
+                    onMouseLeave={() => { if(window.innerWidth >= 768) setHoveredImage(null) }}
                   >
-                    <div className="aspect-square bg-[#111] overflow-hidden cursor-pointer relative z-20">
+                    <div className="aspect-square bg-[#111] overflow-hidden relative z-20">
                       <img
                         src={imgUrl}
-                        className="w-full h-full object-cover transition-all duration-300"
+                        className="w-full h-full object-cover transition-all duration-300 md:group-hover:scale-110"
                         alt={`Frame ${num}`}
                       />
                     </div>
-                    <span className="text-[9px] text-white/40">0{num}</span>
+                    <span className="text-[8px] md:text-[9px] text-white/40">0{num}</span>
                   </div>
                 );
               })}
             </div>
 
-            <div className="mt-auto w-full pt-12 relative z-20">
+            <div className="mt-auto w-full pt-8 md:pt-12 relative z-20">
               <button
                 onClick={() => navigate('/')}
-                className="w-full bg-[#1A1A1A] hover:bg-[#2A59E8] transition-colors py-3 text-[10px] uppercase tracking-widest text-white/70 cursor-pointer"
+                className="w-full bg-[#1A1A1A] hover:bg-[#2A59E8] transition-colors py-4 text-[9px] md:text-[10px] uppercase tracking-widest text-white/70 hover:text-white cursor-pointer"
               >
                 <GlitchText>:/ BACK TO DIRECTORY</GlitchText>
               </button>
