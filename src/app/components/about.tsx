@@ -7,7 +7,7 @@ const TECH_IMAGES = [
   "react", "nextdotjs", "typescript", "tailwindcss", "framer",
   "threedotjs", "webgl", "greensock", "html5", "opengl",
   "nodedotjs", "postgresql", "supabase", "graphql",
-  "figma", "adobecreativecloud", "git", "vercel"
+  "figma", "git", "vercel"
 ];
 
 // --- OUTSIDE THE SCREEN DATA ---
