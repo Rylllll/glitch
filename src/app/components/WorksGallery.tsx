@@ -198,10 +198,10 @@ export function WorksGallery({
   return (
     <>
       {/* ---------------------------------------------------------------- */}
-      {/* CUSTOM CURSOR (Visible only when hovering the desktop gallery and intro is finished) */}
+      {/* MODERN CUSTOM CURSOR (Visible immediately on section hover)        */}
       {/* ---------------------------------------------------------------- */}
       <motion.div
-        className="fixed top-0 left-0 w-[80px] h-[80px] bg-white text-black rounded-full items-center justify-center font-druk text-[11px] tracking-widest uppercase pointer-events-none z-[9999] hidden md:flex"
+        className="fixed top-0 left-0 flex items-center justify-center pointer-events-none z-[9999] hidden md:flex"
         style={{
           x: cursorSpringX,
           y: cursorSpringY,
@@ -210,12 +210,21 @@ export function WorksGallery({
         }}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ 
-          opacity: isHoveringGallery && !isIntroActive ? 1 : 0, 
-          scale: isHoveringGallery && !isIntroActive ? 1 : 0.5 
+          opacity: isHoveringGallery ? 1 : 0, 
+          scale: isHoveringGallery ? 1 : 0.5 
         }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
-        <span className="mt-1">VIEW</span>
+        <div className="w-[84px] h-[84px] rounded-full backdrop-blur-md bg-white/10 border border-white/20 shadow-2xl flex items-center justify-center text-white transition-all duration-300">
+          <motion.span 
+            key={isIntroActive ? "scroll" : "view"}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[9px] tracking-[0.2em] uppercase ml-0.5"
+          >
+            {isIntroActive ? "SCROLL" : "VIEW"}
+          </motion.span>
+        </div>
       </motion.div>
 
       {/* ---------------------------------------------------------------- */}
@@ -245,15 +254,20 @@ export function WorksGallery({
                   alt={work.title} 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                 />
-                <div className="absolute top-2 left-2 bg-black/60 px-2 py-1 text-[9px] text-white/80 tracking-widest backdrop-blur-sm">
+                <div className="absolute top-2 left-2 bg-black/60 px-2 py-1 text-[9px] text-white/80 tracking-widest backdrop-blur-sm z-10">
                   {String(index + 1).padStart(2, '0')}
                 </div>
                 
-                {/* Hover overlay for tapping hint */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center pointer-events-none">
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white border border-white/30 px-4 py-2 text-[10px] uppercase tracking-widest backdrop-blur-md">
+                {/* Modern Always-Visible Pill for Mobile (Scrolls into view) */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
+                    className="backdrop-blur-md bg-black/40 border border-white/20 text-white px-5 py-2.5 rounded-full text-[9px] uppercase tracking-widest shadow-2xl"
+                  >
                     View Project
-                  </span>
+                  </motion.div>
                 </div>
               </div>
 
@@ -292,7 +306,7 @@ export function WorksGallery({
         </div>
 
         <div 
-          className={`sticky top-0 h-screen w-full overflow-hidden ${!isIntroActive ? 'cursor-none' : 'cursor-auto'}`}
+          className="sticky top-0 h-screen w-full overflow-hidden cursor-none"
           onClick={() => {
             // Guard click event if intro is still active
             if (!isIntroActive) onSelectWork(displayWork);
