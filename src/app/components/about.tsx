@@ -508,7 +508,7 @@ export function AboutSection() {
 
           <Reveal delay={0.9} y={10}>
             <a
-              href="/Reymark-Boquiron.pdf"
+              href="/files/Reymark-Boquiron.pdf"
               download="Reymark_Boquiron_Resume.pdf"
               className="inline-flex items-center justify-between gap-4 px-6 py-4 mt-8 md:mt-12 border border-white/20 hover:bg-white text-white hover:text-black transition-all duration-300 text-[10px] md:text-[11px] uppercase tracking-widest font-bold w-full max-w-[240px] group"
             >
