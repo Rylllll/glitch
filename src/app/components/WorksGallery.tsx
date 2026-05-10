@@ -6,7 +6,8 @@ import {
   useMotionValueEvent, 
   useMotionValue, 
   useMotionTemplate,
-  useTransform
+  useTransform,
+  useSpring
 } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 
@@ -77,7 +78,21 @@ export function WorksGallery({
   });
 
   const [displayIndex, setDisplayIndex] = useState(0); 
+  const [isIntroActive, setIsIntroActive] = useState(true);
   const wipeProgress = useMotionValue(0);
+
+  // --- CUSTOM CURSOR LOGIC ---
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const springConfig = { damping: 25, stiffness: 300 };
+  const cursorSpringX = useSpring(cursorX, springConfig);
+  const cursorSpringY = useSpring(cursorY, springConfig);
+  const [isHoveringGallery, setIsHoveringGallery] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    cursorX.set(e.clientX);
+    cursorY.set(e.clientY);
+  };
 
   // --- CANVAS ASCII BAND ---
   const renderCanvas = (fraction: number) => {
@@ -137,7 +152,9 @@ export function WorksGallery({
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const exactIndex = latest * works.length;
     
-    // --- FIX APPLIED HERE ---
+    // Update intro state: Intro is active while the first exact index is less than 1
+    setIsIntroActive(exactIndex < 1);
+
     // Subtracting 0.55 delays the index update until the visual wipe is halfway done.
     // The visual wipe happens between n.1 and n.99. Midpoint is ~n.55.
     let disp = Math.floor(exactIndex - 0.55);
@@ -180,6 +197,27 @@ export function WorksGallery({
 
   return (
     <>
+      {/* ---------------------------------------------------------------- */}
+      {/* CUSTOM CURSOR (Visible only when hovering the desktop gallery and intro is finished) */}
+      {/* ---------------------------------------------------------------- */}
+      <motion.div
+        className="fixed top-0 left-0 w-[80px] h-[80px] bg-white text-black rounded-full items-center justify-center font-druk text-[11px] tracking-widest uppercase pointer-events-none z-[9999] hidden md:flex"
+        style={{
+          x: cursorSpringX,
+          y: cursorSpringY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ 
+          opacity: isHoveringGallery && !isIntroActive ? 1 : 0, 
+          scale: isHoveringGallery && !isIntroActive ? 1 : 0.5 
+        }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        <span className="mt-1">VIEW</span>
+      </motion.div>
+
       {/* ---------------------------------------------------------------- */}
       {/* MOBILE GRID LAYOUT (Visible only < 768px)                          */}
       {/* ---------------------------------------------------------------- */}
@@ -254,8 +292,14 @@ export function WorksGallery({
         </div>
 
         <div 
-          className="sticky top-0 h-screen w-full overflow-hidden cursor-pointer"
-          onClick={() => onSelectWork(displayWork)}
+          className={`sticky top-0 h-screen w-full overflow-hidden ${!isIntroActive ? 'cursor-none' : 'cursor-auto'}`}
+          onClick={() => {
+            // Guard click event if intro is still active
+            if (!isIntroActive) onSelectWork(displayWork);
+          }}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={() => setIsHoveringGallery(true)}
+          onMouseLeave={() => setIsHoveringGallery(false)}
         >
           
           {/* --- INTRO COVER LAYER --- */}
@@ -283,7 +327,7 @@ export function WorksGallery({
           </motion.div>
 
           {/* --- BASE IMAGE LAYERS --- */}
-          <div className="absolute inset-0 z-0 bg-black">
+          <div className="absolute inset-0 z-0 bg-black pointer-events-none">
             {works.map((w, i) => {
               const imgWipe = useTransform(scrollYProgress, (latest) => {
                 const exact = latest * works.length;
@@ -347,7 +391,7 @@ export function WorksGallery({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="grid grid-cols-3 gap-4 text-[11px] uppercase tracking-widest"
+              className="grid grid-cols-3 gap-4 text-[11px] uppercase tracking-widest pointer-events-none"
             >
               <div>
                 <div className="text-white/40 mb-1">CLIENTS</div>

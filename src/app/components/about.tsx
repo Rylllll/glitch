@@ -15,7 +15,7 @@ const TECH_IMAGES = [
   { slug: "html5", name: "HTML5" },
   { slug: "opengl", name: "OpenGL" },
   { slug: "nodedotjs", name: "Node.js" },
-  { slug: "express", name: "Express.js" }, // <-- Added here
+  { slug: "express", name: "Express.js" },
   { slug: "postgresql", name: "PostgreSQL" },
   { slug: "mongodb", name: "MongoDB" },
   { slug: "supabase", name: "Supabase" },
@@ -118,6 +118,36 @@ export function SnapTitle({ children, delay = 0 }: { children: ReactNode; delay?
           y: { duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] },
           opacity: { duration: 0.4, delay, times: [0, 0.1, 0.2, 0.3, 1] }
         }}
+        className="inline-block"
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
+// Cinematic Glitch Reveal Animation
+export function GlitchTitle({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
+  return (
+    <span className="inline-block align-bottom py-1 -my-1 overflow-visible">
+      <motion.span
+        initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
+        whileInView={{
+          opacity: [0, 1, 0.2, 1, 0.5, 1],
+          x: [-30, 20, -15, 10, -5, 0],
+          skewX: [30, -30, 15, -15, 5, 0],
+          filter: ["blur(10px)", "blur(0px)", "blur(6px)", "blur(0px)", "blur(2px)", "blur(0px)"],
+          textShadow: [
+            "none",
+            "4px 0 0 rgba(255,0,0,0.8), -4px 0 0 rgba(0,255,255,0.8)",
+            "none",
+            "-3px 0 0 rgba(255,0,0,0.8), 3px 0 0 rgba(0,255,255,0.8)",
+            "none",
+            "none"
+          ]
+        }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 0.7, delay, ease: "circOut" }}
         className="inline-block"
       >
         {children}
@@ -358,13 +388,13 @@ function OutsideScreenInteractive({ delay = 0 }: { delay?: number }) {
         {/* Massive Header embedded in the grid layout */}
         <div className="w-full pt-8 md:pt-12 pb-4 md:pb-6 border-b flex flex-wrap gap-x-2 md:gap-x-4">
           <h2 className="font-druk text-[10vw] md:text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
-            <SnapTitle delay={0.1}>OUTSIDE</SnapTitle>
+            <GlitchTitle delay={0.1}>OUTSIDE</GlitchTitle>
           </h2>
           <h2 className="font-druk text-[10vw] md:text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
-            <SnapTitle delay={0.3}>THE</SnapTitle>
+            <GlitchTitle delay={0.3}>THE</GlitchTitle>
           </h2>
           <h2 className="font-druk text-[10vw] md:text-[5.5vw] leading-[0.85] tracking-tighter uppercase text-white font-bold m-0 p-0">
-            <SnapTitle delay={0.5}>code .</SnapTitle>
+            <GlitchTitle delay={0.5}>code .</GlitchTitle>
           </h2>
         </div>
 
@@ -436,9 +466,14 @@ export function AboutSection() {
   const techRow1X = useTransform(smoothProgress, [0, 1], ["0%", "-30%"]);
   const techRow2X = useTransform(smoothProgress, [0, 1], ["-30%", "0%"]);
 
+  // Calculate arrays and multiply them so they don't run out during the horizontal scroll
   const halfLength = Math.ceil(TECH_IMAGES.length / 2);
-  const topImages = [...TECH_IMAGES.slice(0, halfLength), ...TECH_IMAGES.slice(0, halfLength)];
-  const bottomImages = [...TECH_IMAGES.slice(halfLength), ...TECH_IMAGES.slice(halfLength)];
+  const firstHalf = TECH_IMAGES.slice(0, halfLength);
+  const secondHalf = TECH_IMAGES.slice(halfLength);
+  
+  // Duplicate arrays 4 times to ensure seamless infinite stream effect
+  const topImages = [...firstHalf, ...firstHalf, ...firstHalf, ...firstHalf];
+  const bottomImages = [...secondHalf, ...secondHalf, ...secondHalf, ...secondHalf];
 
   return (
     <section ref={containerRef} id="about" className="relative z-10 px-4 md:px-6 py-16 md:py-24 bg-[#050505] min-h-screen overflow-hidden">
@@ -476,7 +511,7 @@ export function AboutSection() {
         
         {/* Left: Bold Statement */}
         <div className="flex flex-col justify-center order-2 lg:order-1 ">
-          <h3 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl uppercase font-druk tracking-wide leading-[1.1] text-white/90">
+          <h3 className="text-2xl sm:text-3xl md:text-4xl xl:text-4xl uppercase font-druk tracking-wide leading-[1.1] text-white/90">
             <SnapTitle delay={0.4}>I DESIGN.</SnapTitle> <br className="hidden lg:block"/>
             <SnapTitle delay={0.5}>I CODE.</SnapTitle> <br className="hidden lg:block"/>
             <SnapTitle delay={0.6}>I DEPLOY.</SnapTitle>
@@ -491,7 +526,7 @@ export function AboutSection() {
         {/* Middle: MASSIVE ASCII Portrait */}
         <div className="w-full flex justify-center opacity-80 mix-blend-screen overflow-hidden sm:overflow-visible order-1 lg:order-2">
           {/* Responsive Scaling applied to container */}
-          <motion.div style={{ y: portraitY }} className="w-full max-w-full scale-100 sm:scale-75 md:scale-100 lg:scale-125 xl:scale-150 transform origin-center">
+          <motion.div style={{ y: portraitY }} className="w-full max-w-full scale-100 sm:scale-75 md:scale-100 lg:scale-125 xl:scale-125 transform origin-center">
             <Reveal delay={0.4}>
               <AsciiPortrait />
             </Reveal>
@@ -565,26 +600,39 @@ export function AboutSection() {
       <div className="mt-24 md:mt-40 relative z-20 pb-16 md:pb-24 overflow-hidden">
         <Reveal>
           <div className="flex justify-between items-center text-[9px] md:text-[10px] uppercase tracking-widest text-white/50 pb-4 mb-8 md:mb-12">
-            <span className="font-druk text-[14px] md:text-[24px]">TECH_STACK</span>
-            <span>IMG_RENDER_ONLY</span>
+            <span className="font-druk text-[14px] md:text-[24px]">SYS.TECH_STACK</span>
+            <span>DATA_NODES_ACTIVE</span>
           </div>
           <DrawLine delay={0.1} />
         </Reveal>
 
-        <div className="mt-12 md:mt-20 flex flex-col gap-8 md:gap-12 w-[200vw] -ml-[50vw]">
+        <div className="mt-12 md:mt-20 flex flex-col gap-6 md:gap-8 w-[300vw] -ml-[50vw]">
           {/* Top Marquee */}
           <motion.div 
             style={{ x: techRow1X }} 
-            className="flex items-center gap-10 md:gap-24 opacity-80"
+            className="flex items-center gap-4 md:gap-6 opacity-90"
           >
             {topImages.map((tech, i) => (
-              <div key={`top-${tech.slug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0 relative flex justify-center">
+              <div 
+                key={`top-${tech.slug}-${i}`} 
+                className="w-24 h-24 md:w-32 md:h-32 group shrink-0 relative flex flex-col items-center justify-center border border-white/10 bg-[#050505] hover:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] hover:bg-[size:100%_4px] hover:border-[#E87C1E]/50 transition-all duration-300"
+              >
+                {/* Tech Node Corner Accents */}
+                <div className="absolute -top-[1px] -left-[1px] w-2 h-2 border-t border-l border-white/50 group-hover:border-[#E87C1E] transition-colors" />
+                <div className="absolute -bottom-[1px] -right-[1px] w-2 h-2 border-b border-r border-white/50 group-hover:border-[#E87C1E] transition-colors" />
+                
+                {/* Index / Meta info */}
+                <div className="absolute top-1 right-2 text-[6px] md:text-[7px] font-mono tracking-widest text-white/20 group-hover:text-[#E87C1E]/60 transition-colors">
+                  MOD.{String(i % firstHalf.length).padStart(2, '0')}
+                </div>
+
                 <img
                   src={`https://cdn.simpleicons.org/${tech.slug}/white`}
                   alt={`${tech.name} icon`}
-                  className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+                  className="w-8 h-8 md:w-10 md:h-10 object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(232,124,30,0.8)]"
                 />
-                <div className="absolute -top-8 md:-top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[8px] md:text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
+                
+                <div className="absolute bottom-2 text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-white/40 group-hover:text-[#E87C1E] transition-colors text-center w-full px-2 truncate">
                   {tech.name}
                 </div>
               </div>
@@ -594,16 +642,29 @@ export function AboutSection() {
           {/* Bottom Marquee */}
           <motion.div 
             style={{ x: techRow2X }} 
-            className="flex items-center gap-10 md:gap-24 opacity-80"
+            className="flex items-center gap-4 md:gap-6 opacity-90"
           >
             {bottomImages.map((tech, i) => (
-              <div key={`bottom-${tech.slug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0 relative flex justify-center">
+              <div 
+                key={`bottom-${tech.slug}-${i}`} 
+                className="w-24 h-24 md:w-32 md:h-32 group shrink-0 relative flex flex-col items-center justify-center border border-white/10 bg-[#050505] hover:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] hover:bg-[size:100%_4px] hover:border-[#E87C1E]/50 transition-all duration-300"
+              >
+                {/* Tech Node Corner Accents */}
+                <div className="absolute -top-[1px] -left-[1px] w-2 h-2 border-t border-l border-white/50 group-hover:border-[#E87C1E] transition-colors" />
+                <div className="absolute -bottom-[1px] -right-[1px] w-2 h-2 border-b border-r border-white/50 group-hover:border-[#E87C1E] transition-colors" />
+                
+                {/* Index / Meta info */}
+                <div className="absolute top-1 right-2 text-[6px] md:text-[7px] font-mono tracking-widest text-white/20 group-hover:text-[#E87C1E]/60 transition-colors">
+                  MOD.{String(i % secondHalf.length).padStart(2, '0')}
+                </div>
+
                 <img
                   src={`https://cdn.simpleicons.org/${tech.slug}/white`}
                   alt={`${tech.name} icon`}
-                  className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+                  className="w-8 h-8 md:w-10 md:h-10 object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(232,124,30,0.8)]"
                 />
-                <div className="absolute -top-8 md:-top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[8px] md:text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
+                
+                <div className="absolute bottom-2 text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-white/40 group-hover:text-[#E87C1E] transition-colors text-center w-full px-2 truncate">
                   {tech.name}
                 </div>
               </div>

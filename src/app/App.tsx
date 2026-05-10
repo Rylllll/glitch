@@ -11,8 +11,167 @@ import { WorkOverview } from "./components/WorkOverview";
 import { AboutSection } from "./components/about";
 
 // --- IMPORT DATA HERE ---
-// Updated to import both arrays
 import { WORK_PROJECTS, PERSONAL_PROJECTS, TECH_STACK } from "../data/data";
+
+// --- CYBERPUNK TYPEWRITER ANIMATION ---
+function TypewriterText({ text, delay = 0, speed = 30 }: { text: string, delay?: number, speed?: number }) {
+  const [displayed, setDisplayed] = useState("");
+  
+  useEffect(() => {
+    setDisplayed(""); 
+    let iteration = 0;
+    let timer: number;
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+-/<>?";
+    
+    const startTyping = () => {
+      timer = window.setInterval(() => {
+        setDisplayed(() => {
+          const lockedCount = Math.floor(iteration / 2); 
+          
+          if (lockedCount >= text.length) {
+            clearInterval(timer);
+            return text;
+          }
+
+          const lockedPart = text.substring(0, lockedCount);
+          const scrambleLength = Math.min(text.length - lockedCount, 6); 
+          let scrambledPart = "";
+          for(let j = 0; j < scrambleLength; j++) {
+             scrambledPart += Math.random() > 0.8 ? " " : chars[Math.floor(Math.random() * chars.length)];
+          }
+
+          return lockedPart + scrambledPart;
+        });
+        iteration++;
+      }, speed);
+    };
+
+    const timeout = window.setTimeout(startTyping, delay);
+    
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(timer);
+    };
+  }, [text, delay, speed]);
+
+  return (
+    <span>
+      {displayed}
+      {displayed !== text && <span className="opacity-70 text-[#E87C1E] animate-pulse">_</span>}
+    </span>
+  );
+}
+
+function BootLoader({ onComplete }: { onComplete: () => void }) {
+  const [progress, setProgress] = useState(0);
+  const [logs, setLogs] = useState<string[]>([]);
+  
+  // Fake terminal boot sequence
+  const bootSequence = [
+    "KERNEL: Booting system...",
+    "NET: Initializing network interfaces",
+    "SYS: Mounting virtual filesystems",
+    "AUTH: Verifying user credentials",
+    "UI: Loading cyberpunk.css",
+    "CORE: Decrypting aesthetic payload",
+    "SUCCESS: Welcome back, REYMARK."
+  ];
+
+  useEffect(() => {
+    let currentProgress = 0;
+    let logIndex = 0;
+    
+    // Randomize the loading speed to feel like a real system boot
+    const interval = setInterval(() => {
+      currentProgress += Math.floor(Math.random() * 15) + 5;
+      if (currentProgress > 100) currentProgress = 100;
+      
+      setProgress(currentProgress);
+      
+      // Reveal the next log based on progress percentage
+      if (logIndex < bootSequence.length && currentProgress > (logIndex * 15)) {
+        setLogs(prev => [...prev, bootSequence[logIndex]]);
+        logIndex++;
+      }
+
+      // Finish loading
+      if (currentProgress === 100) {
+        clearInterval(interval);
+        // Brief pause at 100% before triggering the exit animation
+        setTimeout(() => {
+          onComplete();
+        }, 800); 
+      }
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <motion.div
+      key="boot-loader"
+      initial={{ opacity: 1 }}
+      exit={{ 
+        opacity: 0, 
+        scale: 1.05, 
+        filter: "blur(10px) brightness(2)",
+        transition: { duration: 0.8, ease: "circIn" } 
+      }}
+      className="fixed inset-0 z-[99999] bg-[#050505] text-white flex flex-col justify-end p-6 md:p-12 font-mono text-[10px] md:text-[12px] uppercase tracking-widest overflow-hidden"
+    >
+      {/* Background Grid Pattern (Matches your menu overlay) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 opacity-10"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.18) 0.5px, transparent 0.5px), linear-gradient(to bottom, rgba(255,255,255,0.18) 0.5px, transparent 0.5px)",
+          backgroundSize: "8px 8px",
+        }}
+      />
+
+      <div className="relative z-10 flex flex-col gap-2 mb-8 text-white/70 h-[150px] justify-end">
+        {logs.map((log, i) => (
+          <motion.div 
+            key={i} 
+            initial={{ opacity: 0, x: -10 }} 
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2"
+          >
+            <span className="text-[#E87C1E]">&gt;</span> {log}
+          </motion.div>
+        ))}
+        {/* Blinking cursor effect at the end of the logs */}
+        {progress < 100 && (
+          <motion.div 
+            animate={{ opacity: [1, 0, 1] }} 
+            transition={{ repeat: Infinity, duration: 0.8 }}
+            className="w-2 h-3 bg-white/70 mt-1"
+          />
+        )}
+      </div>
+      
+      <div className="relative z-10 w-full flex flex-col gap-3">
+        <div className="flex justify-between text-white/50">
+          <span>SYSTEM.INITIALIZE()</span>
+          <motion.span 
+            className="text-white"
+            animate={progress === 100 ? { color: "#E87C1E", textShadow: "0px 0px 8px rgba(232,124,30,0.8)" } : {}}
+          >
+            {progress}%
+          </motion.span>
+        </div>
+        {/* Brutalist Progress Bar */}
+        <div className="h-[2px] w-full bg-white/10 relative overflow-hidden">
+          <motion.div 
+            className="absolute top-0 left-0 h-full bg-white"
+            animate={{ width: `${progress}%` }}
+            transition={{ ease: "linear", duration: 0.2 }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 // --- GLOBAL CANVAS GLITCH (Moving Particles) ---
 function GlobalGlitchBackground() {
@@ -287,12 +446,12 @@ function MainLayout() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-0 text-[10px] md:text-[11px] uppercase tracking-widest relative z-20 pb-8 md:pb-0">
           <div className="flex flex-col gap-1 text-center md:text-left">
-            <span>DIGITAL EXPERIENCES.</span>
-            <span>REIMAGINED.</span>
+            <span><TypewriterText text="DIGITAL EXPERIENCES." delay={800} speed={25} /></span>
+            <span><TypewriterText text="REIMAGINED." delay={1600} speed={25} /></span>
           </div>
           <div className="text-center md:text-right text-white/80 leading-relaxed max-w-sm mx-auto md:max-w-none md:mx-0">
-            REYMARK IS A CREATIVE DEVELOPER FUSING HIGH-END<br className="hidden md:block" />
-            DESIGN WITH A DRIVE TO EXPLORE THE UNCONVENTIONAL...
+            <span className="md:block"><TypewriterText text="REYMARK IS A CREATIVE DEVELOPER FUSING HIGH-END" delay={2400} speed={15} /></span>
+            <span className="md:block"><TypewriterText text="DESIGN WITH A DRIVE TO EXPLORE THE UNCONVENTIONAL..." delay={3800} speed={15} /></span>
           </div>
         </div>
       </section>
@@ -350,7 +509,7 @@ function MainLayout() {
               </div>
               <div>
                 <div className="text-white/50 mb-4 border-b border-white/20 pb-2 w-fit">LOCATION</div>
-                <p className="text-white/80 leading-relaxed">MANILA, PHILIPPINES<br />UTC+8 / REMOTE</p>
+                <p className="text-white/80 leading-relaxed">ANTIPOLO, PHILIPPINES<br />UTC+8 / REMOTE / HYBRID</p>
               </div>
             </div>
           </div>
@@ -381,13 +540,24 @@ function MainLayout() {
 }
 
 export default function App() {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainLayout />} />
-        <Route path="/work/:slug" element={<WorkOverview />} />
-      </Routes>
-    </Router>
+    <>
+      <AnimatePresence mode="wait">
+        {!isLoaded && <BootLoader onComplete={() => setIsLoaded(true)} />}
+      </AnimatePresence>
+
+      {/* Render the actual site only when loading is done */}
+      {isLoaded && (
+        <Router>
+          <Routes>
+            <Route path="/" element={<MainLayout />} />
+            <Route path="/work/:slug" element={<WorkOverview />} />
+          </Routes>
+        </Router>
+      )}
+    </>
   );
 }
 

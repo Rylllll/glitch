@@ -80,7 +80,7 @@ export const PERSONAL_PROJECTS = [
       "/images/museum/overlay.png",
       "/images/museum/overview.png",
     ],
-    description: "OUR COLLECTION EMBODIES A DELICATE BALANCE OF HISTORICAL DEPTH AND INNOVATIVE EXPRESSION, CREATING AN IMMERSIVE EXPERIENCE OF TIMELESS ELEGANCE AND INTELLECTUAL ALLURE.",
+    description: "A digital history encyclopedia, the COLLECTION EMBODIES A DELICATE BALANCE OF HISTORICAL DEPTH AND INNOVATIVE EXPRESSION, CREATING AN IMMERSIVE EXPERIENCE OF TIMELESS ELEGANCE AND INTELLECTUAL ALLURE.",
     techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Figma", "Museum API"],
     link: "https://curators-archive.rynath.dev/"
   },

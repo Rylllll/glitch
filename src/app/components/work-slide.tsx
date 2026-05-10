@@ -64,7 +64,7 @@ export function WorkSlide({
           </div>
           <div className="flex flex-col items-end gap-1 text-right pointer-events-auto">
             <span>PRODUCTION STUDIO</span>
-            <span>MANILA, PHILIPPINES</span>
+            <span>ANTIPOLO, PHILIPPINES</span>
           </div>
         </motion.div>
 
