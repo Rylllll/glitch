@@ -591,7 +591,7 @@ export function AboutSection() {
         <OutsideScreenInteractive delay={0.3} />
       </motion.div>
 
-      {/* SCROLL-DRIVEN TECH STACK MARQUEE */}
+      {/* TECH STACK SECTION */}
       <div className="mt-24 md:mt-40 relative z-20 pb-16 md:pb-24 overflow-hidden">
         <Reveal>
           <div className="flex justify-between items-center text-[9px] md:text-[10px] uppercase tracking-widest text-white/50 pb-4 mb-8 md:mb-12">
@@ -601,20 +601,41 @@ export function AboutSection() {
           <DrawLine delay={0.1} />
         </Reveal>
 
-        <div className="mt-12 md:mt-20 flex flex-col gap-8 md:gap-12 w-[200vw] -ml-[50vw]">
+        {/* MOBILE GRID VIEW (Hidden on Desktop) */}
+        <div className="mt-12 grid md:hidden grid-cols-4 sm:grid-cols-5 gap-y-8 gap-x-4 justify-items-center opacity-80">
+          {TECH_IMAGES.map((tech, i) => (
+            <Reveal key={`mobile-tech-${tech.slug}-${i}`} delay={i * 0.02} y={10}>
+              <div className="flex flex-col items-center gap-2 group">
+                <div className="w-10 h-10 flex justify-center items-center">
+                  <img
+                    src={`https://cdn.simpleicons.org/${tech.slug}/white`}
+                    alt={`${tech.name} icon`}
+                    className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-opacity"
+                  />
+                </div>
+                <span className="text-[8px] uppercase tracking-widest text-white/50 text-center">
+                  {tech.name}
+                </span>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* DESKTOP SCROLL-DRIVEN MARQUEE (Hidden on Mobile) */}
+        <div className="hidden md:flex mt-20 flex-col gap-12 w-[200vw] -ml-[50vw]">
           {/* Top Marquee */}
           <motion.div 
             style={{ x: techRow1X }} 
-            className="flex items-center gap-10 md:gap-24 opacity-80"
+            className="flex items-center gap-24 opacity-80"
           >
             {topImages.map((tech, i) => (
-              <div key={`top-${tech.slug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0 relative flex justify-center">
+              <div key={`top-${tech.slug}-${i}`} className="w-24 h-24 group shrink-0 relative flex justify-center">
                 <img
                   src={`https://cdn.simpleicons.org/${tech.slug}/white`}
                   alt={`${tech.name} icon`}
                   className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
                 />
-                <div className="absolute -top-8 md:-top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[8px] md:text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
+                <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
                   {tech.name}
                 </div>
               </div>
@@ -624,16 +645,16 @@ export function AboutSection() {
           {/* Bottom Marquee */}
           <motion.div 
             style={{ x: techRow2X }} 
-            className="flex items-center gap-10 md:gap-24 opacity-80"
+            className="flex items-center gap-24 opacity-80"
           >
             {bottomImages.map((tech, i) => (
-              <div key={`bottom-${tech.slug}-${i}`} className="w-12 h-12 md:w-24 md:h-24 group shrink-0 relative flex justify-center">
+              <div key={`bottom-${tech.slug}-${i}`} className="w-24 h-24 group shrink-0 relative flex justify-center">
                 <img
                   src={`https://cdn.simpleicons.org/${tech.slug}/white`}
                   alt={`${tech.name} icon`}
                   className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
                 />
-                <div className="absolute -top-8 md:-top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[8px] md:text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
+                <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
                   {tech.name}
                 </div>
               </div>
