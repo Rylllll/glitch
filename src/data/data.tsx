@@ -6,6 +6,7 @@ export const WORK_PROJECTS = [
     type: "Brand Website",
     date: "2025",
     image: "/images/yamaha/bg.png",
+    mobileImage: "/images/yamaha/mobile.png",
     images: [
       "/images/yamaha/1.png",
       "/images/yamaha/2.png",
@@ -24,6 +25,7 @@ export const WORK_PROJECTS = [
     type: "Brand Website",
     date: "2025",
     image: "/images/racing/bg.png",
+    mobileImage: "/images/racing/mobile.png",
     images: [
       "/images/racing/1.png",
       "/images/racing/2.png",
@@ -38,7 +40,6 @@ export const WORK_PROJECTS = [
     techStack: ["Next.js", "Tailwind CSS", "Motion", "AWS", "Laravel"],
     link: "https://www.yamaha-motor.com.ph/yamaha-racing"
   },
-
 ];
 
 export const PERSONAL_PROJECTS = [
@@ -49,6 +50,7 @@ export const PERSONAL_PROJECTS = [
     type: "Information website",
     date: "2026",
     image: "/images/pokemon/homepage.png",
+    mobileImage: "/images/pokemon/mobile.png",
     images: [
       "/images/pokemon/pokedex.png",
       "/images/pokemon/overview.png",
@@ -63,12 +65,29 @@ export const PERSONAL_PROJECTS = [
     link: "https://pokemon-ph.rynath.dev/"
   },
   {
+    slug: "pokedex-cms",
+    title: "Pokedex cms",
+    client: "Personal Project",
+    type: "CMS",
+    date: "2026",
+    image: "/images/cms/bg.png",
+    mobileImage: "/images/cms/mobile.png",
+    images: [
+      "/images/cms/1.png",
+      "/images/cms/2.png",
+    ],
+    description: "PokéWeb OS is a modernized, terminal-based interface designed to compile the world's Pokemon data into one fluid, accessible mainframe.",
+    techStack: ["Next.js", "Tailwind CSS", "Mongo DB", "Express Js"],
+    link: "https://pokemon-cms.rynath.dev/"
+  },
+  {
     slug: "curators-archive",
     title: "Curators archive",
     client: "Personal Project",
     type: "Information website",
     date: "2026",
     image: "/images/museum/bg.png",
+    mobileImage: "/images/museum/mobile.png",
     images: [
       "/images/museum/gallery.png",
       "/images/museum/homepage.png",
@@ -91,6 +110,7 @@ export const PERSONAL_PROJECTS = [
     type: "Information website",
     date: "2026",
     image: "/images/flower/bg.png",
+    mobileImage: "/images/flower/mobile.png",
     images: [
       "/images/flower/exhibition.png",
       "/images/flower/encyclopedia.png",

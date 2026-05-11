@@ -9,7 +9,7 @@ import {
   useTransform,
   useSpring
 } from "motion/react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Fragment } from "react";
 
 function TypewriterText({ text, delay = 0, speed = 30 }: { text: string, delay?: number, speed?: number }) {
   const [displayed, setDisplayed] = useState("");
@@ -71,7 +71,7 @@ export function WorksGallery({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // --- SCROLL LOGIC FOR DESKTOP ---
+  // --- SCROLL LOGIC FOR ALL DEVICES ---
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -152,11 +152,9 @@ export function WorksGallery({
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const exactIndex = latest * works.length;
     
-    // Update intro state: Intro is active while the first exact index is less than 1
-    setIsIntroActive(exactIndex < 1);
+    setIsIntroActive(exactIndex < 0.15);
 
     // Subtracting 0.55 delays the index update until the visual wipe is halfway done.
-    // The visual wipe happens between n.1 and n.99. Midpoint is ~n.55.
     let disp = Math.floor(exactIndex - 0.55);
     
     if (disp >= works.length) disp = works.length - 1;
@@ -186,7 +184,7 @@ export function WorksGallery({
 
   const displayWork = works[displayIndex]; 
 
-  // Intro Cover Mask (Desktop Wipe)
+  // Intro Cover Mask (Wipe)
   const coverWipe = useTransform(scrollYProgress, (latest) => {
     const exact = latest * works.length;
     if (exact >= 1) return 1;
@@ -198,7 +196,7 @@ export function WorksGallery({
   return (
     <>
       {/* ---------------------------------------------------------------- */}
-      {/* MODERN CUSTOM CURSOR (Visible immediately on section hover)        */}
+      {/* MODERN CUSTOM CURSOR (Visible on Desktop)                          */}
       {/* ---------------------------------------------------------------- */}
       <motion.div
         className="fixed top-0 left-0 flex items-center justify-center pointer-events-none z-[9999] hidden md:flex"
@@ -228,85 +226,45 @@ export function WorksGallery({
       </motion.div>
 
       {/* ---------------------------------------------------------------- */}
-      {/* MOBILE GRID LAYOUT (Visible only < 768px)                          */}
+      {/* MOBILE INTERACTION PILL (Visible on Mobile only - CENTERED)        */}
       {/* ---------------------------------------------------------------- */}
-      <div className="md:hidden flex flex-col gap-6 px-4 py-20 w-full bg-black relative z-10 font-tronica text-white">
-        
-        <div className="flex items-center justify-between text-[10px] text-white/50 tracking-widest uppercase mb-4 border-b border-white/20 pb-4">
-          <span>◉ {introText}</span>
-          <span>// {String(works.length).padStart(2, "0")}</span>
+      <motion.div 
+        className="md:hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: isHoveringGallery ? 1 : 0, scale: isHoveringGallery ? 1 : 0.8 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        <div className="backdrop-blur-md bg-black/40 border border-white/20 shadow-2xl flex items-center justify-center text-white px-6 py-4 rounded-full">
+          <motion.span 
+            key={isIntroActive ? "scroll" : "view"}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-[10px] tracking-[0.2em] uppercase font-bold text-center"
+          >
+            {isIntroActive ? "SCROLL" : "TAP TO VIEW"}
+          </motion.span>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {works.map((work, index) => (
-            <motion.div
-              key={work.slug}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group cursor-pointer flex flex-col gap-4"
-              onClick={() => onSelectWork(work)}
-            >
-              <div className="w-full aspect-[4/3] overflow-hidden bg-[#111] relative border border-white/10">
-                <img 
-                  src={work.image} 
-                  alt={work.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                />
-                <div className="absolute top-2 left-2 bg-black/60 px-2 py-1 text-[9px] text-white/80 tracking-widest backdrop-blur-sm z-10">
-                  {String(index + 1).padStart(2, '0')}
-                </div>
-                
-                {/* Modern Always-Visible Pill for Mobile (Scrolls into view) */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
-                    className="backdrop-blur-md bg-black/40 border border-white/20 text-white px-5 py-2.5 rounded-full text-[9px] uppercase tracking-widest shadow-2xl"
-                  >
-                    View Project
-                  </motion.div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <h3 className="font-druk text-xl md:text-2xl uppercase tracking-wider text-white">
-                  {work.title}
-                </h3>
-                <div className="grid grid-cols-2 gap-2 text-[9px] text-white/50 tracking-widest uppercase border-t border-white/10 pt-2">
-                  <div className="flex flex-col">
-                    <span className="text-white/30 mb-0.5">CLIENT</span>
-                    <span className="text-white/80">{work.client}</span>
-                  </div>
-                  <div className="flex flex-col text-right">
-                    <span className="text-white/30 mb-0.5">DATE</span>
-                    <span className="text-white/80">{work.date}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+      </motion.div>
 
       {/* ---------------------------------------------------------------- */}
-      {/* DESKTOP STICKY SCROLL LAYOUT (Visible only >= 768px)               */}
+      {/* FULLSCREEN STICKY SCROLL LAYOUT (All Devices)                      */}
       {/* ---------------------------------------------------------------- */}
       <div
         ref={containerRef}
-        className="hidden md:block relative w-full bg-black font-tronica text-white"
+        className="relative w-full bg-black font-tronica text-white"
         style={{ height: `${(works.length + 1) * 200}vh` }}
       >
         <div className="hidden">
           {works.map((w) => (
-            <img key={`preload-${w.image}`} src={w.image} alt="preload" />
+            <Fragment key={`preload-${w.slug}`}>
+              <img src={w.image} alt="preload desktop" />
+              {w.mobileImage && <img src={w.mobileImage} alt="preload mobile" />}
+            </Fragment>
           ))}
         </div>
 
         <div 
-          className="sticky top-0 h-screen w-full overflow-hidden cursor-none"
+          className="sticky top-0 h-screen w-full overflow-hidden md:cursor-none"
           onClick={() => {
             // Guard click event if intro is still active
             if (!isIntroActive) onSelectWork(displayWork);
@@ -314,11 +272,16 @@ export function WorksGallery({
           onMouseMove={handleMouseMove}
           onMouseEnter={() => setIsHoveringGallery(true)}
           onMouseLeave={() => setIsHoveringGallery(false)}
+          onTouchStart={() => setIsHoveringGallery(true)}
+          onTouchEnd={() => {
+            // Keep the pill visible for a moment on mobile after releasing
+            setTimeout(() => setIsHoveringGallery(false), 2000); 
+          }}
         >
           
           {/* --- INTRO COVER LAYER --- */}
           <motion.div 
-            className="absolute inset-0 z-40 bg-[#050505] flex items-center justify-center pointer-events-none"
+            className="absolute inset-0 z-40 bg-[#050505] flex items-center justify-center pointer-events-none px-4"
             style={{ 
               WebkitMaskImage: coverMask, 
               maskImage: coverMask 
@@ -334,7 +297,7 @@ export function WorksGallery({
               }}
               transition={{ duration: 0.5, ease: "circOut" }}
               viewport={{ once: true, margin: "-15%" }}
-              className="font-druk text-[5vw] uppercase text-white/20 tracking-tighter whitespace-nowrap"
+              className="font-druk text-[12vw] sm:text-[10vw] md:text-[5vw] uppercase text-white/20 tracking-tighter whitespace-normal md:whitespace-nowrap text-center leading-none"
             >
                {introText}
             </motion.div>
@@ -354,20 +317,31 @@ export function WorksGallery({
               const mask = useMotionTemplate`linear-gradient(175deg, transparent calc(${imgWipe} * 200% - 100%), black calc(${imgWipe} * 200%))`;
 
               return (
-                <motion.img 
-                  key={`base-${i}`}
-                  src={w.image} 
-                  alt={w.title} 
-                  className="absolute inset-0 h-full w-full object-cover"
-                  style={{ 
-                    zIndex: works.length - i, 
-                    WebkitMaskImage: mask, 
-                    maskImage: mask 
-                  }}
-                />
+                <div key={`base-${i}`} className="absolute inset-0 h-full w-full" style={{ zIndex: works.length - i }}>
+                  {/* DESKTOP IMAGE */}
+                  <motion.img 
+                    src={w.image} 
+                    alt={w.title} 
+                    className="absolute inset-0 h-full w-full object-cover hidden md:block"
+                    style={{ 
+                      WebkitMaskImage: mask, 
+                      maskImage: mask 
+                    }}
+                  />
+                  {/* MOBILE IMAGE */}
+                  <motion.img 
+                    src={w.mobileImage || w.image} 
+                    alt={w.title} 
+                    className="absolute inset-0 h-full w-full object-cover block md:hidden"
+                    style={{ 
+                      WebkitMaskImage: mask, 
+                      maskImage: mask 
+                    }}
+                  />
+                </div>
               );
             })}
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
           </div>
 
           {/* ASCII Canvas Band Layer */}
@@ -378,7 +352,7 @@ export function WorksGallery({
           />
 
           {/* MIDDLE ROW (UI) */}
-          <div className="absolute inset-x-0 top-1/2 z-30 flex -translate-y-1/2 items-center justify-between px-6 text-[11px] uppercase tracking-widest text-white/80 pointer-events-none">
+          <div className="absolute inset-x-0 top-1/2 z-30 flex -translate-y-1/2 items-center justify-between px-4 md:px-6 text-[9px] md:text-[11px] uppercase tracking-widest text-white/80 pointer-events-none">
             <span>◉ {introText}</span>
             <span className="text-white/60 absolute left-1/2 -translate-x-1/2 w-8 text-center">
               <TypewriterText text={`/${String(displayIndex + 1).padStart(2, "0")}`} />
@@ -387,15 +361,15 @@ export function WorksGallery({
           </div>
 
           {/* BOTTOM ROW (UI) */}
-          <div className="absolute inset-x-0 bottom-0 z-30 grid grid-cols-2 items-end gap-6 p-8 pointer-events-none">
+          <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col md:grid md:grid-cols-2 items-start md:items-end gap-4 md:gap-6 p-6 md:p-8 pointer-events-none">
             <motion.h2
               key={`title-${displayIndex}`}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="uppercase leading-[0.9] text-7xl tracking-tight pointer-events-auto"
+              className="uppercase leading-[0.9] tracking-tight pointer-events-auto max-w-full overflow-hidden"
             >
-              <span className="font-druk text-[2rem] font-bold">
+              <span className="font-druk text-3xl sm:text-4xl md:text-5xl font-bold break-words">
                 <TypewriterText text={displayWork.title} speed={40} />
               </span>
             </motion.h2>
@@ -405,7 +379,7 @@ export function WorksGallery({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="grid grid-cols-3 gap-4 text-[11px] uppercase tracking-widest pointer-events-none"
+              className="grid grid-cols-3 gap-2 md:gap-4 text-[9px] md:text-[11px] uppercase tracking-widest pointer-events-none w-full md:w-auto"
             >
               <div>
                 <div className="text-white/40 mb-1">CLIENTS</div>

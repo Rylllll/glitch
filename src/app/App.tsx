@@ -271,12 +271,34 @@ function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeHash, setActiveHash] = useState(location.hash || "");
+  const [activeHash, setActiveHash] = useState("");
 
-  // Update active hash on scroll or manual change
+  // --- FORCE TOP & RESET HASH ON RELOAD ---
   useEffect(() => {
-    setActiveHash(location.hash);
-  }, [location]);
+    // 1. Tell browser not to restore scroll position natively
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    // 2. Force scroll to top instantly
+    window.scrollTo(0, 0);
+    
+    // 3. Clear the hash via React Router so useLocation syncs up
+    if (location.hash) {
+      navigate(location.pathname + location.search, { replace: true });
+    }
+    
+    // 4. Force state reset
+    setActiveHash("");
+  }, []); // Run only once on mount
+
+  // Normal navigation update
+  useEffect(() => {
+    // Only update if location.hash is actually present and different
+    if (location.hash !== activeHash) {
+      setActiveHash(location.hash);
+    }
+  }, [location.hash]); 
 
   // Helper for smooth scrolling
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
@@ -291,7 +313,6 @@ function MainLayout() {
       const element = document.querySelector(hash);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
-        // Optional: Update URL without jumping
         window.history.pushState(null, "", hash);
       }
     }

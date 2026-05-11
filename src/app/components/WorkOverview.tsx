@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { GlitchText } from "./glitch-text";
-// Update the import to bring in both arrays
 import { WORK_PROJECTS, PERSONAL_PROJECTS, TECH_STACK } from "../../data/data";
 
 const SPHERE_POSITIONS = [
@@ -15,7 +14,6 @@ const SPHERE_POSITIONS = [
   { rotY: -90, rotX: 30 },
 ];
 
-// Combine the works into one array for the overview page to traverse
 const ALL_WORKS = [...WORK_PROJECTS, ...PERSONAL_PROJECTS];
 
 function TypewriterText({ text, delay = 0, speed = 30 }: { text: string, delay?: number, speed?: number }) {
@@ -66,8 +64,6 @@ export function WorkOverview() {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  // --- SCROLL TO TOP FIX ---
-  // This ensures the page always starts at the very top when opened.
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
@@ -76,10 +72,8 @@ export function WorkOverview() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hoveredWorkSlug, setHoveredWorkSlug] = useState<string | null>(null);
 
-  // Search through the combined array
   const work = ALL_WORKS.find((w) => w.slug === slug);
 
-  // Find index in the combined array
   const activeHoverIndex = ALL_WORKS.findIndex((w) => w.slug === hoveredWorkSlug);
   const mapOffset = activeHoverIndex !== -1 
     ? SPHERE_POSITIONS[activeHoverIndex % SPHERE_POSITIONS.length] 
@@ -104,8 +98,7 @@ export function WorkOverview() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={() => setHoveredImage(null)} // Close on tap for mobile
-            // FIX: Added md:pointer-events-none so the overlay doesn't steal the hover state on desktop
+            onClick={() => setHoveredImage(null)} 
             className="fixed inset-0 z-[120] pointer-events-auto md:pointer-events-none bg-black/90 flex flex-col items-center justify-center cursor-pointer md:cursor-auto"
           >
             <div className="relative max-w-[90vw] max-h-[80vh]">
@@ -141,7 +134,6 @@ export function WorkOverview() {
               }}
             />
             
-            {/* Dynamic Z-translation for smaller mobile screens so the sphere doesn't clip */}
             <motion.div
               className="absolute w-full h-full flex items-center justify-center"
               style={{ transformStyle: "preserve-3d" }}
@@ -174,10 +166,24 @@ export function WorkOverview() {
                       {String(index + 1).padStart(2, "0")}
                     </motion.div>
 
+                    {/* Desktop Spherical Image */}
                     <motion.img 
                       src={w.image} 
                       alt={w.title} 
-                      className="w-[60vw] md:w-[280px] lg:w-[500px] h-auto object-cover shadow-2xl" 
+                      className="hidden md:block w-[280px] lg:w-[500px] h-auto object-cover shadow-2xl" 
+                      animate={{ 
+                        scale: isFocused ? 1 : 0.6,
+                        opacity: isFocused ? 1 : 0.2,
+                        filter: isFocused ? 'grayscale(0%)' : 'grayscale(100%) blur(5px)'
+                      }}
+                      transition={{ duration: 0.5 }}
+                    />
+
+                    {/* Mobile Spherical Image */}
+                    <motion.img 
+                      src={w.mobileImage || w.image} 
+                      alt={w.title} 
+                      className="block md:hidden w-[60vw] h-auto object-cover shadow-2xl" 
                       animate={{ 
                         scale: isFocused ? 1 : 0.6,
                         opacity: isFocused ? 1 : 0.2,
@@ -304,10 +310,18 @@ export function WorkOverview() {
         {/* FULLSCREEN HERO IMAGE */}
         <div className="w-full h-[60vh] md:h-screen relative bg-[#111] flex items-center justify-center mt-12 md:mt-0">
           
+          {/* Desktop Hero Image */}
           <img
             src={work.image}
             alt={work.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-90"
+            className="absolute inset-0 w-full h-full object-cover opacity-90 hidden md:block"
+          />
+
+          {/* Mobile Hero Image */}
+          <img
+            src={work.mobileImage || work.image}
+            alt={work.title}
+            className="absolute inset-0 w-full h-full object-cover opacity-90 block md:hidden"
           />
           
           <a 
