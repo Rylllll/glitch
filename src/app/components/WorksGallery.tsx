@@ -226,27 +226,6 @@ export function WorksGallery({
       </motion.div>
 
       {/* ---------------------------------------------------------------- */}
-      {/* MOBILE INTERACTION PILL (Visible on Mobile only - CENTERED)        */}
-      {/* ---------------------------------------------------------------- */}
-      <motion.div 
-        className="md:hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: isHoveringGallery ? 1 : 0, scale: isHoveringGallery ? 1 : 0.8 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-      >
-        <div className="backdrop-blur-md bg-black/40 border border-white/20 shadow-2xl flex items-center justify-center text-white px-6 py-4 rounded-full">
-          <motion.span 
-            key={isIntroActive ? "scroll" : "view"}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-[10px] tracking-[0.2em] uppercase font-bold text-center"
-          >
-            {isIntroActive ? "SCROLL" : "TAP TO VIEW"}
-          </motion.span>
-        </div>
-      </motion.div>
-
-      {/* ---------------------------------------------------------------- */}
       {/* FULLSCREEN STICKY SCROLL LAYOUT (All Devices)                      */}
       {/* ---------------------------------------------------------------- */}
       <div
@@ -272,11 +251,6 @@ export function WorksGallery({
           onMouseMove={handleMouseMove}
           onMouseEnter={() => setIsHoveringGallery(true)}
           onMouseLeave={() => setIsHoveringGallery(false)}
-          onTouchStart={() => setIsHoveringGallery(true)}
-          onTouchEnd={() => {
-            // Keep the pill visible for a moment on mobile after releasing
-            setTimeout(() => setIsHoveringGallery(false), 2000); 
-          }}
         >
           
           {/* --- INTRO COVER LAYER --- */}

@@ -324,14 +324,17 @@ export function WorkOverview() {
             className="absolute inset-0 w-full h-full object-cover opacity-90 block md:hidden"
           />
           
-          <a 
-            href={work.link}
-            target="_blank" 
-            rel="noreferrer"
-            className="relative z-20 border border-white/30 bg-black/40 backdrop-blur-md px-6 py-3 md:px-8 md:py-4 text-[9px] md:text-[10px] uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-300 pointer-events-auto"
-          >
-            <GlitchText>VISIT LIVE PROJECT ↗</GlitchText>
-          </a>
+          {/* CONDITIONALLY RENDER VISIT BUTTON */}
+          {work.slug !== "pokedex-cms" && (
+            <a 
+              href={work.link}
+              target="_blank" 
+              rel="noreferrer"
+              className="relative z-20 border border-white/30 bg-black/40 backdrop-blur-md px-6 py-3 md:px-8 md:py-4 text-[9px] md:text-[10px] uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-300 pointer-events-auto"
+            >
+              <GlitchText>VISIT LIVE PROJECT ↗</GlitchText>
+            </a>
+          )}
 
           <div className="absolute bottom-0 inset-x-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
           <div className="absolute top-0 inset-x-0 h-24 md:h-32 bg-gradient-to-b from-black to-transparent pointer-events-none"></div>
