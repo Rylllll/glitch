@@ -343,7 +343,7 @@ export function WorksGallery({
               transition={{ duration: 0.5 }}
               className="uppercase leading-[0.9] tracking-tight pointer-events-auto max-w-full overflow-hidden"
             >
-              <span className="font-druk text-3xl sm:text-4xl md:text-5xl font-bold break-words">
+              <span className="font-druk text-3xl sm:text-4xl md:text-3xl font-bold break-words">
                 <TypewriterText text={displayWork.title} speed={40} />
               </span>
             </motion.h2>

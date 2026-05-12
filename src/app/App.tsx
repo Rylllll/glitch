@@ -290,20 +290,51 @@ function MainLayout() {
     
     // 4. Force state reset
     setActiveHash("");
-  }, []); // Run only once on mount
+  }, [location.pathname, location.search, navigate]);
 
-  // Normal navigation update
+  // --- SCROLL SPY (TRACKS USER SCROLL POSITION) ---
   useEffect(() => {
-    // Only update if location.hash is actually present and different
-    if (location.hash !== activeHash) {
-      setActiveHash(location.hash);
-    }
-  }, [location.hash]); 
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      // If we scroll back up near the top, reset the active state to home ("")
+      if (scrollY < viewportHeight * 0.4) {
+        setActiveHash((prev) => (prev !== "" ? "" : prev));
+        return;
+      }
+
+      // The exact IDs of the sections we want to track
+      const sections = ["about", "works", "contact"];
+      let currentSection = "";
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetHeight = element.offsetHeight;
+          
+          // Check if scroll position is inside this section's boundaries
+          // (Adding a slight buffer so it highlights slightly before it perfectly hits the top)
+          if (scrollY >= offsetTop - viewportHeight * 0.4 && scrollY < offsetTop + offsetHeight - viewportHeight * 0.4) {
+            currentSection = `#${section}`;
+          }
+        }
+      }
+
+      // Only trigger a re-render if the section actually changed
+      setActiveHash((prev) => (prev !== currentSection ? currentSection : prev));
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Trigger immediately on mount
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []); 
 
   // Helper for smooth scrolling
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
     e.preventDefault();
-    setActiveHash(hash);
     setIsMobileMenuOpen(false);
 
     if (hash === "" || hash === "#") {
