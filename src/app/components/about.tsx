@@ -2,27 +2,51 @@ import { ReactNode, useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "motion/react";
 import { AsciiPortrait } from "./ascii-portrait";
 
-// Updated with Express.js
+// Updated Tech Stack Array with custom URLs for icons missing/failing in Simple Icons
 const TECH_IMAGES = [
-  { slug: "react", name: "React" },
+  // Frontend Development
   { slug: "nextdotjs", name: "Next.js" },
-  { slug: "typescript", name: "TypeScript" },
+  { slug: "react", name: "React.js" },
+  { slug: "vite", name: "Vite React" },
   { slug: "tailwindcss", name: "Tailwind CSS" },
-  { slug: "framer", name: "Framer Motion" },
-  { slug: "threedotjs", name: "Three.js" },
-  { slug: "webgl", name: "WebGL" },
-  { slug: "greensock", name: "GSAP" },
-  { slug: "html5", name: "HTML5" },
-  { slug: "opengl", name: "OpenGL" },
+  { slug: "sass", name: "SCSS" },
+  { slug: "html5", name: "Vanilla HTML" },
+  { slug: "javascript", name: "JavaScript" },
+  { slug: "react", name: "React Native" },
+  
+  // Backend Development
   { slug: "nodedotjs", name: "Node.js" },
   { slug: "express", name: "Express.js" },
-  { slug: "postgresql", name: "PostgreSQL" },
+  { slug: "laravel", name: "Laravel PHP" },
+  
+  // Databases & Backend Services
   { slug: "mongodb", name: "MongoDB" },
   { slug: "supabase", name: "Supabase" },
-  { slug: "graphql", name: "GraphQL" },
+  
+  // 3D / Web Graphics
+  { slug: "webgl", name: "WebGL" },
+  { slug: "threedotjs", name: "Three.js" },
+  
+  // Motion & Animation
+  { slug: "framer", name: "Framer Motion" },
+  { slug: "greensock", name: "GSAP" },
+  
+  // Cloud & DevOps
+  { slug: "amazonaws", name: "AWS", customUrl: "https://img.icons8.com/color/100/amazon-web-services.png" },
+  
+  // AI/ML Platforms & Tools
+  { slug: "openai", name: "OpenAI API", customUrl: "https://img.icons8.com/ios-filled/100/ffffff/chatgpt.png" },
+  { slug: "huggingface", name: "Hugging Face" },
+  { slug: "tensorflow", name: "TensorFlow" },
+  { slug: "langchain", name: "LangChain" },
+  
+  // Programming Languages
+  { slug: "typescript", name: "TypeScript" },
+  { slug: "php", name: "PHP" },
+  
+  // Design Tools
   { slug: "figma", name: "Figma" },
-  { slug: "git", name: "Git" },
-  { slug: "vercel", name: "Vercel" }
+  { slug: "adobexd", name: "Adobe XD", customUrl: "https://img.icons8.com/color/100/adobe-xd.png" }
 ];
 
 // --- OUTSIDE THE SCREEN DATA ---
@@ -463,12 +487,14 @@ export function AboutSection() {
   const portraitY = useTransform(smoothProgress, [0, 1], ["-10%", "10%"]);
   const logSectionY = useTransform(smoothProgress, [0, 1], ["10%", "-5%"]);
   
-  const techRow1X = useTransform(smoothProgress, [0, 1], ["0%", "-30%"]);
-  const techRow2X = useTransform(smoothProgress, [0, 1], ["-30%", "0%"]);
-
+  // Split the array logic for Infinite Marquee
   const halfLength = Math.ceil(TECH_IMAGES.length / 2);
-  const topImages = [...TECH_IMAGES.slice(0, halfLength), ...TECH_IMAGES.slice(0, halfLength)];
-  const bottomImages = [...TECH_IMAGES.slice(halfLength), ...TECH_IMAGES.slice(halfLength)];
+  const firstHalf = TECH_IMAGES.slice(0, halfLength);
+  const secondHalf = TECH_IMAGES.slice(halfLength);
+  
+  // Duplicate the slices to create a seamless looping effect
+  const topImages = [...firstHalf, ...firstHalf];
+  const bottomImages = [...secondHalf, ...secondHalf];
 
   return (
     <section ref={containerRef} id="about" className="relative z-10 px-4 md:px-6 py-16 md:py-24 bg-[#050505] min-h-screen overflow-hidden">
@@ -608,8 +634,12 @@ export function AboutSection() {
               <div className="flex flex-col items-center gap-2 group">
                 <div className="w-10 h-10 flex justify-center items-center">
                   <img
-                    src={`https://cdn.simpleicons.org/${tech.slug}/white`}
+                    src={tech.customUrl || `https://cdn.simpleicons.org/${tech.slug}/white`}
                     alt={`${tech.name} icon`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null; // Stops the infinite blinking loop
+                      e.currentTarget.src = "https://img.icons8.com/ios-filled/100/ffffff/source-code.png";
+                    }}
                     className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-opacity"
                   />
                 </div>
@@ -621,18 +651,25 @@ export function AboutSection() {
           ))}
         </div>
 
-        {/* DESKTOP SCROLL-DRIVEN MARQUEE (Hidden on Mobile) */}
-        <div className="hidden md:flex mt-20 flex-col gap-12 w-[200vw] -ml-[50vw]">
+        {/* DESKTOP INFINITE MARQUEE (Hidden on Mobile) */}
+        {/* Removed 'overflow-hidden' from this wrapper to let tooltips bleed outside naturally */}
+        <div className="hidden md:flex mt-20 flex-col gap-12 w-full relative">
+          
           {/* Top Marquee */}
           <motion.div 
-            style={{ x: techRow1X }} 
-            className="flex items-center gap-24 opacity-80"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
+            className="flex items-center gap-24 opacity-80 w-max pr-24"
           >
             {topImages.map((tech, i) => (
               <div key={`top-${tech.slug}-${i}`} className="w-24 h-24 group shrink-0 relative flex justify-center">
                 <img
-                  src={`https://cdn.simpleicons.org/${tech.slug}/white`}
+                  src={tech.customUrl || `https://cdn.simpleicons.org/${tech.slug}/white`}
                   alt={`${tech.name} icon`}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null; // Stops the infinite blinking loop
+                    e.currentTarget.src = "https://img.icons8.com/ios-filled/100/ffffff/source-code.png";
+                  }}
                   className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
                 />
                 <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
@@ -642,16 +679,21 @@ export function AboutSection() {
             ))}
           </motion.div>
 
-          {/* Bottom Marquee */}
+          {/* Bottom Marquee (Reverse direction) */}
           <motion.div 
-            style={{ x: techRow2X }} 
-            className="flex items-center gap-24 opacity-80"
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
+            className="flex items-center gap-24 opacity-80 w-max pr-24"
           >
             {bottomImages.map((tech, i) => (
               <div key={`bottom-${tech.slug}-${i}`} className="w-24 h-24 group shrink-0 relative flex justify-center">
                 <img
-                  src={`https://cdn.simpleicons.org/${tech.slug}/white`}
+                  src={tech.customUrl || `https://cdn.simpleicons.org/${tech.slug}/white`}
                   alt={`${tech.name} icon`}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null; // Stops the infinite blinking loop
+                    e.currentTarget.src = "https://img.icons8.com/ios-filled/100/ffffff/source-code.png";
+                  }}
                   className="w-full h-full object-contain opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
                 />
                 <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-[10px] uppercase tracking-widest bg-black/80 text-white border border-white/20 px-3 py-1 whitespace-nowrap z-50 backdrop-blur-sm translate-y-2 group-hover:translate-y-0">
@@ -660,6 +702,7 @@ export function AboutSection() {
               </div>
             ))}
           </motion.div>
+          
         </div>
       </div>
 
