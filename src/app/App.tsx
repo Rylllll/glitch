@@ -492,7 +492,7 @@ function MainLayout() {
         />
         <TerminalGlitches />
 
-        <div className="scale-[0.35] sm:scale-50 md:scale-100 origin-center transform-gpu mt-12 md:mt-0 flex flex-1 items-center justify-center relative z-20">
+        <div className="scale-[0.35] md:scale-50 lg:scale-100 origin-center transform-gpu mt-12 md:mt-0 flex flex-1 items-center justify-center relative z-20">
           <AsciiTitle />
         </div>
 
