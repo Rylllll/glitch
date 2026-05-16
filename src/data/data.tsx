@@ -15,10 +15,28 @@ export const WORK_PROJECTS = [
       "/images/yamaha/5.png",
     ],
     description: "the official Philippine website of Yamaha Motor Philippines, Inc., focused on motorcycles, scooters, riding culture, and customer services. It serves as both a brand showcase and a digital platform for Yamaha riders in the Philippines. The site highlights Yamaha’s motorcycle lineup such as Mio, Aerox, NMAX, Sniper, and PG-1 models, along with dealer locators, service support, promotions, events, loyalty programs, and rider communities. Visually, the website uses a modern, sporty, and high-energy design style with bold typography, cinematic banners, dark-themed sections, dynamic motion graphics, and racing-inspired visuals to reflect speed, lifestyle, and performance culture.",
-    techStack: ["Next.js", "Tailwind CSS", "Motion", "AWS", "Laravel"],
+    techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "AWS", "Laravel"],
     link: "https://www.yamaha-motor.com.ph/"
   },
   {
+    slug: "yclub-philippines",
+    title: "Yclub Philippines",
+    client: "Yamaha Motor Philippines",
+    type: "Brand Website",
+    date: "2024",
+    image: "/images/yclub/bg.png",
+    mobileImage: "/images/yclub/mobile_bg.png",
+    images: [
+      "/images/yclub/1.png",
+      "/images/yclub/2.png",
+      "/images/yclub/3.png",
+      "/images/yclub/4.png",
+    ],
+    description: "The YClub Philippines is the official motorcycle community and rider club program of Yamaha Motor Philippines Inc.. It’s designed for Yamaha motorcycle owners and riding groups in the Philippines who want to join official Yamaha-sponsored activities, events, and communities.",
+    techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "AWS", "Laravel"],
+    link: "https://yclub.yamaha-motor.com.ph/"
+  },
+   {
     slug: "yamaha-racing-ph",
     title: "Yamaha Racing PH",
     client: "Yamaha Motor Philippines",
@@ -37,7 +55,7 @@ export const WORK_PROJECTS = [
       "/images/racing/8.png",
     ],
     description: "The Yamaha Racing Philippines website is a motorsports-focused subsite of Yamaha Motor Philippines dedicated to Yamaha’s racing culture, competitive teams, riders, and performance identity in the Philippines. Unlike the main Yamaha website which focuses on selling motorcycles and lifestyle branding, this section is specifically designed to showcase Yamaha’s involvement in motorcycle racing, track events, rider development, and motorsport communities",
-    techStack: ["Next.js", "Tailwind CSS", "Motion", "AWS", "Laravel"],
+    techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "AWS", "Laravel"],
     link: "https://www.yamaha-motor.com.ph/yamaha-racing"
   },
 ];

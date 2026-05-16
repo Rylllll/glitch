@@ -186,7 +186,7 @@ function IdentityRow({ col1, col2, col3, delay }: { col1: ReactNode; col2: React
       <motion.div
         initial="initial"
         whileHover="hover"
-        className="relative flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4 py-8 md:py-10 border-b border-white/20 group overflow-hidden cursor-crosshair"
+        className="relative flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4 py-8 md:py-10 border-b border-white/20 group overflow-hidden cursor-pointer"
       >
         <motion.div
           variants={{

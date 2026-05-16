@@ -176,7 +176,7 @@ export function AsciiPortrait() {
       onTouchMove={onTouchMove}
       onMouseLeave={onLeave}
       onTouchEnd={onLeave}
-      className="w-full h-full flex flex-col items-center justify-center cursor-crosshair relative group"
+      className="w-full h-full flex flex-col items-center justify-center cursor-pointer relative group"
     >
       <div className="absolute inset-0 -inset-x-12 -inset-y-12 z-0"></div>
       
