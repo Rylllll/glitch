@@ -33,6 +33,9 @@ const TECH_IMAGES = [
   
   // Cloud & DevOps
   { slug: "amazonaws", name: "AWS", customUrl: "https://img.icons8.com/color/100/amazon-web-services.png" },
+  { slug: "github", name: "GitHub" },
+  { slug: "git", name: "Git" },
+  { slug: "vercel", name: "Vercel" },
   
   // AI/ML Platforms & Tools
   { slug: "openai", name: "OpenAI API", customUrl: "https://img.icons8.com/ios-filled/100/ffffff/chatgpt.png" },
