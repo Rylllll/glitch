@@ -1,5 +1,11 @@
-/* Import Druk wide from Google Fonts (Put this at the VERY TOP of your CSS file) */
-@import url('https://fonts.cdnfonts.com/css/druk-wide-trial');
+/* Local Druk Wide Font Implementation */
+@font-face {
+  font-family: "Druk Wide";
+  src: url("../assets/fonts/Druk%20Wide.otf") format("opentype");
+  font-weight: 700; /* Druk Wide Bold Trial defaults to bold */
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Your existing Tronica Mono local font */
 @font-face {
@@ -13,16 +19,15 @@
 :root {
   --font-tronica: "Tronica Mono", ui-monospace, "JetBrains Mono", monospace;
   
-  /* Add Druk CSS variable */
-  --font-druk: "Druk Wide Trial", sans-serif;
-                                                
+  /* Updated Druk CSS variable to use the local family name */
+  --font-druk: "Druk Wide", sans-serif;
 }
 
 .font-tronica {
   font-family: var(--font-tronica);
 }
 
-/* Add Druk wide utility class */
+/* Druk wide utility class */
 .font-druk {
   font-family: var(--font-druk);
 }
