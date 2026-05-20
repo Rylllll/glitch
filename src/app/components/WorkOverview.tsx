@@ -325,7 +325,7 @@ export function WorkOverview() {
           />
           
           {/* CONDITIONALLY RENDER VISIT BUTTON */}
-          {work.slug !== "pokedex-cms" && work.slug !== "yamaha-motors-cms" && (
+          {work.slug !== "pokedex-cms" && work.slug !== "yamaha-motor-cms" && (
             <a 
               href={work.link}
               target="_blank" 
