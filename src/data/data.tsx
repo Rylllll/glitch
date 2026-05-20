@@ -64,11 +64,12 @@ export const WORK_PROJECTS = [
   client: "Yamaha Motor Philippines",
   type: "CMS",
   date: "2025",
-  image: "/images/cms/bg.png",
-  mobileImage: "/images/cms/mobile.png",
+  image: "/images/ymph-cms/bg.png",
+  mobileImage: "/images/ymph-cms/mobile.png",
   images: [
-    "/images/cms/1.png",
-    "/images/cms/2.png"
+    "/images/ymph-cms/1.png",
+    "/images/ymph-cms/2.png",
+    "/images/ymph-cms/3.png",
   ],
   description: "A customized, robust Content Management System designed to streamline digital asset management, inventory tracking, and content deployment for Yamaha Motor Philippines.",
   techStack: ["Next.js", "Tailwind CSS", "Laravel PHP", "AWS"],
