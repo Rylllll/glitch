@@ -58,6 +58,22 @@ export const WORK_PROJECTS = [
     techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "AWS", "Laravel"],
     link: "https://www.yamaha-motor.com.ph/yamaha-racing"
   },
+  {
+  slug: "yamaha-motor-cms",
+  title: "Yamaha Motor CMS",
+  client: "Yamaha Motor Philippines",
+  type: "CMS",
+  date: "2025",
+  image: "/images/cms/bg.png",
+  mobileImage: "/images/cms/mobile.png",
+  images: [
+    "/images/cms/1.png",
+    "/images/cms/2.png"
+  ],
+  description: "A customized, robust Content Management System designed to streamline digital asset management, inventory tracking, and content deployment for Yamaha Motor Philippines.",
+  techStack: ["Next.js", "Tailwind CSS", "Laravel PHP", "AWS"],
+  link: "https://yamaha-cms.rynath.dev/"
+}
 ];
 
 export const PERSONAL_PROJECTS = [
