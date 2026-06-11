@@ -72,6 +72,21 @@ export function WorkOverview() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hoveredWorkSlug, setHoveredWorkSlug] = useState<string | null>(null);
 
+  // --- ADDED: Lock body scroll when overlay is open ---
+  useEffect(() => {
+    if (isDropdownOpen || hoveredImage) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isDropdownOpen, hoveredImage]);
+  // ---------------------------------------------------
+
   const work = ALL_WORKS.find((w) => w.slug === slug);
 
   const activeHoverIndex = ALL_WORKS.findIndex((w) => w.slug === hoveredWorkSlug);
@@ -325,7 +340,7 @@ export function WorkOverview() {
           />
           
           {/* CONDITIONALLY RENDER VISIT BUTTON */}
-          {work.slug !== "pokedex-cms" && work.slug !== "yamaha-motor-cms" && (
+          {work.slug !== "pokedex-cms" && (
             <a 
               href={work.link}
               target="_blank" 

@@ -439,6 +439,13 @@ function MainLayout() {
               >
                 HOME
               </a>
+               <a
+                href="#about"
+                onClick={(e) => scrollToSection(e, "#about")}
+                className={`text-[12vw] font-druk leading-[0.85] tracking-tighter uppercase transition-colors w-fit ${activeHash === "#about" ? "bg-white text-black px-4 py-2" : "hover:text-white/60"}`}
+              >
+                ABOUT
+              </a>
               <a
                 href="#works"
                 onClick={(e) => scrollToSection(e, "#works")}
@@ -446,13 +453,7 @@ function MainLayout() {
               >
                 WORKS
               </a>
-              <a
-                href="#about"
-                onClick={(e) => scrollToSection(e, "#about")}
-                className={`text-[12vw] font-druk leading-[0.85] tracking-tighter uppercase transition-colors w-fit ${activeHash === "#about" ? "bg-white text-black px-4 py-2" : "hover:text-white/60"}`}
-              >
-                ABOUT
-              </a>
+             
             </div>
 
             {/* Bottom Footer Info */}
