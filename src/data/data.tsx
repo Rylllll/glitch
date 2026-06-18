@@ -16,7 +16,8 @@ export const WORK_PROJECTS = [
     ],
     description: "the official Philippine website of Yamaha Motor Philippines, Inc., focused on motorcycles, scooters, riding culture, and customer services. It serves as both a brand showcase and a digital platform for Yamaha riders in the Philippines. The site highlights Yamaha’s motorcycle lineup such as Mio, Aerox, NMAX, Sniper, and PG-1 models, along with dealer locators, service support, promotions, events, loyalty programs, and rider communities. Visually, the website uses a modern, sporty, and high-energy design style with bold typography, cinematic banners, dark-themed sections, dynamic motion graphics, and racing-inspired visuals to reflect speed, lifestyle, and performance culture.",
     techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "AWS", "Laravel"],
-    link: "https://www.yamaha-motor.com.ph/"
+    link: "https://www.yamaha-motor.com.ph/",
+    github: ""
   },
   {
     slug: "yclub-philippines",
@@ -34,9 +35,10 @@ export const WORK_PROJECTS = [
     ],
     description: "The YClub Philippines is the official motorcycle community and rider club program of Yamaha Motor Philippines Inc.. It’s designed for Yamaha motorcycle owners and riding groups in the Philippines who want to join official Yamaha-sponsored activities, events, and communities.",
     techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "AWS", "Laravel"],
-    link: "https://yclub.yamaha-motor.com.ph/"
+    link: "https://yclub.yamaha-motor.com.ph/",
+    github: ""
   },
-   {
+  {
     slug: "yamaha-racing-ph",
     title: "Yamaha Racing PH",
     client: "Yamaha Motor Philippines",
@@ -56,25 +58,27 @@ export const WORK_PROJECTS = [
     ],
     description: "The Yamaha Racing Philippines website is a motorsports-focused subsite of Yamaha Motor Philippines dedicated to Yamaha’s racing culture, competitive teams, riders, and performance identity in the Philippines. Unlike the main Yamaha website which focuses on selling motorcycles and lifestyle branding, this section is specifically designed to showcase Yamaha’s involvement in motorcycle racing, track events, rider development, and motorsport communities",
     techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "AWS", "Laravel"],
-    link: "https://www.yamaha-motor.com.ph/yamaha-racing"
+    link: "https://www.yamaha-motor.com.ph/yamaha-racing",
+    github: ""
   },
   {
-  slug: "yamaha-motor-cms",
-  title: "Yamaha Motor CMS",
-  client: "Yamaha Motor Philippines",
-  type: "CMS",
-  date: "2025",
-  image: "/images/ymph-cms/bg.png",
-  mobileImage: "/images/ymph-cms/mobile.png",
-  images: [
-    "/images/ymph-cms/1.png",
-    "/images/ymph-cms/2.png",
-    "/images/ymph-cms/3.png",
-  ],
-  description: "A customized, robust Content Management System designed to streamline digital asset management, inventory tracking, and content deployment for Yamaha Motor Philippines.",
-  techStack: ["Next.js", "Tailwind CSS", "Laravel PHP", "AWS"],
-  link: "https://yamaha-cms.rynath.dev/"
-}
+    slug: "yamaha-motor-cms",
+    title: "Yamaha Motor CMS",
+    client: "Yamaha Motor Philippines",
+    type: "CMS",
+    date: "2025",
+    image: "/images/ymph-cms/bg.png",
+    mobileImage: "/images/ymph-cms/mobile.png",
+    images: [
+      "/images/ymph-cms/1.png",
+      "/images/ymph-cms/2.png",
+      "/images/ymph-cms/3.png",
+    ],
+    description: "A customized, robust Content Management System designed to streamline digital asset management, inventory tracking, and content deployment for Yamaha Motor Philippines.",
+    techStack: ["Next.js", "Tailwind CSS", "Laravel PHP", "AWS"],
+    link: "https://yamaha-cms.rynath.dev/",
+    github: ""
+  }
 ];
 
 export const PERSONAL_PROJECTS = [
@@ -97,7 +101,8 @@ export const PERSONAL_PROJECTS = [
     ],
     description: "PokéWeb OS is a modernized, terminal-based interface designed to compile the world's Pokemon data into one fluid, accessible mainframe.",
     techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Poke Api", "TCG Api", "Mongo DB"],
-    link: "https://pokemon-ph.rynath.dev/"
+    link: "https://pokemon-ph.rynath.dev/",
+    github: "https://github.com/Rylllll/Pokedex"
   },
   {
     slug: "pokedex-cms",
@@ -113,7 +118,8 @@ export const PERSONAL_PROJECTS = [
     ],
     description: "PokéWeb OS is a modernized, terminal-based interface designed to compile the world's Pokemon data into one fluid, accessible mainframe.",
     techStack: ["Next.js", "Tailwind CSS", "Mongo DB", "Express Js"],
-    link: "https://pokemon-cms.rynath.dev/"
+    link: "https://pokemon-cms.rynath.dev/",
+    github: "https://github.com/Rylllll/pokemon-cms"
   },
   {
     slug: "curators-archive",
@@ -136,7 +142,8 @@ export const PERSONAL_PROJECTS = [
     ],
     description: "A digital history encyclopedia, the COLLECTION EMBODIES A DELICATE BALANCE OF HISTORICAL DEPTH AND INNOVATIVE EXPRESSION, CREATING AN IMMERSIVE EXPERIENCE OF TIMELESS ELEGANCE AND INTELLECTUAL ALLURE.",
     techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Figma", "Museum API"],
-    link: "https://curators-archive.rynath.dev/"
+    link: "https://curators-archive.rynath.dev/",
+    github: "https://github.com/Rylllll/Museum_v1"
   },
   {
     slug: "floral-lexicon",
@@ -155,7 +162,8 @@ export const PERSONAL_PROJECTS = [
     ],
     description: "A digital flower encyclopedia wrapped in an elegant and minimal aesthetic. It presents itself as a living archive of flowers, where visitors can browse and search through thousands of blooms while exploring their meanings, symbolism, histories, classifications, and growing details.",
     techStack: ["Next.js", "GSAP", "Framer Motion", "Tailwind CSS", "Figma"],
-    link: "https://flower-archive.rynath.dev/"
+    link: "https://flower-archive.rynath.dev/",
+    github: "https://github.com/Rylllll/botanical-showcase"
   }
 ];
 
